@@ -2,37 +2,54 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "What happens to the coherence time when the velocity of the user is doubled?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "It is also doubled",
+        "b": "It gets halved",
+        "c": "It remains unchanged",
+        "d": "Can't be determined"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Coherence time is inversely proportional to Doppler spread, which increases with velocity. So doubling velocity halves coherence time.",
+        "b": "Correct. Coherence time is inversely proportional to velocity, so it gets halved.",
+        "c": "Incorrect. Coherence time changes with velocity.",
+        "d": "Incorrect. It can be determined from the relation with velocity."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "If the velocity of the user was halved, what would the effect be on the PSD plot?",
+      "answers": {
+        "a": "The plot would get narrower and taller",
+        "b": "The plot would get wider and shorter",
+        "c": "Both may happen; but the overall shape will not change",
+        "d": "Can't be determined"
+      },
+      "explanations": {
+        "a": "Correct. Lower velocity means smaller Doppler spread, which narrows the spectrum and increases the peak.",
+        "b": "Incorrect. This describes an increase in velocity.",
+        "c": "Incorrect. The shape changes as Doppler spread changes.",
+        "d": "Incorrect. It can be determined based on Doppler spread."
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "What happens if we increase the value of α?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "Coherence time will increase",
+        "b": "Coherence time will decrease",
+        "c": "Bit error rate of communication will increase",
+        "d": "None of the above"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. Increasing α typically leads to faster channel variations, reducing coherence time.",
+        "b": "Correct. A higher α means higher Doppler, so lower coherence time.",
+        "c": "Incorrect in this context. BER may change but isn't the primary effect of α.",
+        "d": "Incorrect. There is a direct effect on coherence time."
       },
-      "correctAnswer": "c",
+      "correctAnswer": "b",
       "difficulty": "beginner"
     }
   ]
