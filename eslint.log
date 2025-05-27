@@ -1,0 +1,8 @@
+
+/home/runner/work/exp-clarke-model-iiith/exp-clarke-model-iiith/experiment/simulation/js/main.js
+  298:16  warning  'maxFreq' is assigned a value but never used  no-unused-vars
+  346:37  warning  'Chart' is not defined                        no-undef
+  391:30  warning  'Chart' is not defined                        no-undef
+
+✖ 3 problems (0 errors, 3 warnings)
+
