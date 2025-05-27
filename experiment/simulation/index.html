@@ -1,13 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<!-- Add CSS at the head of HTML file -->
-    <link rel="stylesheet" href="./css/main.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clarke's Flat Fading Model - Virtual Experiment</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css">
 </head>
 <body>
-		<!-- Your code goes here-->
+    <div class="container">
+        <h1>Clarke's Flat Fading Model</h1>
+        <p class="subtitle">Interactive Virtual Experiment for Mobile Channel Modeling</p>
+        
+        <div class="model-info">
+            <h3>Model Description</h3>
+            <p>Clarke's model simulates flat fading in mobile communications where a receiver moves through a field of scatterers. The model assumes K scattering paths with uniform angular distribution.</p>
+            <div class="formula">
+                <strong>Key Equations:</strong><br>
+                Autocorrelation: R₀[n] = 2a²πJ₀(nπDᵥ/W)<br>
+                Doppler Spectrum: S(f) = 4a²W / (π√(1-(2fW/Dᵥ)²)) for |f| ≤ Dᵥ/(2W)
+            </div>
+        </div>
+        
+        <div class="controls-section">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <h3>Signal Parameters</h3>
+                    <div class="input-group">
+                        <label for="amplitude">Amplitude (a): <span class="value-display" id="amplitudeValue">1.0</span></label>
+                        <input type="range" id="amplitude" min="0.1" max="2.0" step="0.1" value="1.0">
+                    </div>
+                    <div class="input-group">
+                        <label for="bandwidth">Bandwidth (W) [Hz]: <span class="value-display" id="bandwidthValue">10</span></label>
+                        <input type="range" id="bandwidth" min="1" max="50" step="1" value="10">
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h3>Doppler Parameters</h3>
+                    <div class="input-group">
+                        <label for="dopplerSpread">Doppler Spread (Dᵥ) [Hz]: <span class="value-display" id="dopplerSpreadValue">20</span></label>
+                        <input type="range" id="dopplerSpread" min="5" max="100" step="5" value="20">
+                    </div>
+                    <div class="input-group">
+                        <label for="coherenceTime">Coherence Time Factor: <span class="value-display" id="coherenceTimeValue">0.05</span></label>
+                        <input type="range" id="coherenceTime" min="0.01" max="0.2" step="0.01" value="0.05">
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h3>Simulation Parameters</h3>
+                    <div class="input-group">
+                        <label for="numSamples">Number of Samples: <span class="value-display" id="numSamplesValue">200</span></label>
+                        <input type="range" id="numSamples" min="50" max="500" step="50" value="200">
+                    </div>
+                    <div class="input-group">
+                        <label for="numPaths">Number of Paths (K): <span class="value-display" id="numPathsValue">8</span></label>
+                        <input type="range" id="numPaths" min="4" max="20" step="2" value="8">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="update-btn" onclick="updatePlots()">Update Simulation</button>
+        </div>
+        
+        <!-- One-Ring Model Diagram Section -->
+        <div class="chart-section" style="margin-bottom: 30px;">
+            <h3 class="chart-title">One-Ring Model Diagram</h3>
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <div class="controls-grid" style="margin-bottom: 15px;">
+                    <div class="control-group">
+                        <h4 style="margin: 0 0 10px 0;">Animation Controls</h4>
+                        <div class="input-group">
+                            <label for="velocity">Mobile Velocity (m/s): <span class="value-display" id="velocityValue">10</span></label>
+                            <input type="range" id="velocity" min="1" max="50" step="1" value="10">
+                        </div>
+                        <button id="toggleAnimation" style="background: #48bb78; color: white; border: none; padding: 8px 16px; border-radius: 15px; cursor: pointer;">Start Animation</button>
+                    </div>
+                    <div class="control-group">
+                        <h4 style="margin: 0 0 10px 0;">Model Info</h4>
+                        <p style="margin: 5px 0; font-size: 0.9em; color: #4a5568;">
+                            <strong>Scatterers:</strong> <span id="scattererCount">8</span><br>
+                            <strong>Current Velocity:</strong> <span id="currentVelocity">10</span> m/s
+                        </p>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <canvas id="oneRingCanvas" width="500" height="500" style="border: 2px solid #e2e8f0; border-radius: 10px; max-width: 100%;"></canvas>
+                </div>
+                <div style="margin-top: 15px; text-align: center; color: #718096;">
+                    <p><strong>Interactive One-Ring Model:</strong> Mobile receiver (blue circle) moves around the ring of scatterers. 
+                    Each scatterer reflects signals with different delays and angles, creating the multipath fading environment.</p>
+                </div>
+            </div>
+        </div>
 
-	<!-- Add JS at the bottom of HTML file --> 
-        <script src="./js/main.js"></script>
+        <div class="charts-container">
+            <div class="chart-section">
+                <h3 class="chart-title">Autocorrelation Function R₀[n]</h3>
+                <div class="chart-container">
+                    <canvas id="autocorrelationChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-section">
+                <h3 class="chart-title">Doppler Power Spectrum S(f)</h3>
+                <div class="chart-container">
+                    <canvas id="spectrumChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+		<script src="./js/main.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
 </body>
 </html>
