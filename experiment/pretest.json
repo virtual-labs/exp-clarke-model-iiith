@@ -2,37 +2,54 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "This is a Sample Question 1?",
+      "question": "What does isotropic antenna gain pattern mean?",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "The power gain term at the antenna DOES NOT depend on the angle of arrival of the signal",
+        "b": "The power gain term at the antenna DOES NOT depend on the phase of the received signal",
+        "c": "Both of the above",
+        "d": "None of the above"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Correct. Isotropic antennas radiate or receive power equally in all directions, so gain is independent of the angle of arrival.",
+        "b": "Incorrect. Phase is not directly related to antenna gain pattern.",
+        "c": "Incorrect. Only option (a) is valid for isotropic pattern.",
+        "d": "Incorrect. Option (a) is valid."
       },
       "correctAnswer": "a",
       "difficulty": "beginner"
     },
     {
-      "question": "This is a Sample Question 2?",
+      "question": "If a channel has a complex Gaussian gain term, i.e., the received signal is y = Hx + w, and all the entries of the H matrix are complex Gaussian, then select the correct option",
       "answers": {
-        "a": "answer1",
-        "b": "answer2",
-        "c": "answer3",
-        "d": "answer4"
+        "a": "The magnitude of the received signal gain is Rayleigh distributed and the phase is Gaussian distributed",
+        "b": "The magnitude of the received signal gain is Chi-square distributed with no. of degrees of freedom equal to the rank of the H matrix and the phase is uniformly distributed in [0, 2π]",
+        "c": "The magnitude of the received signal gain is Rayleigh distributed and the phase is uniformly distributed in [0, 2π]",
+        "d": "The magnitude of the received signal gain is Chi-square distributed with no. of degrees of freedom equal to the rank of the H matrix and the phase is Gaussian distributed"
       },
       "explanations": {
-        "a": "Explanation 1  <a href='www.google.com'>here</a>",
-        "b": "Explanation 2",
-        "c": "Explanation 2",
-        "d": "Explanation 2"
+        "a": "Incorrect. The phase is not Gaussian distributed.",
+        "b": "Incorrect. The gain of a single complex Gaussian channel is Rayleigh, not Chi-square.",
+        "c": "Correct. For complex Gaussian variables, magnitude is Rayleigh distributed and phase is uniformly distributed in [0, 2π].",
+        "d": "Incorrect. The phase is uniformly distributed, not Gaussian."
       },
       "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What is the relation between the auto-correlation of a random signal and its power spectral density?",
+      "answers": {
+        "a": "The auto-correlation is the Fourier transform of the power spectral density",
+        "b": "The power spectral density is the Fourier transform of the auto-correlation",
+        "c": "They are not related in the case of random signals",
+        "d": "The power spectral density is the Fourier transform of the auto-correlation if and only if the process is Gaussian"
+      },
+      "explanations": {
+        "a": "Incorrect. This reverses the actual relationship.",
+        "b": "Correct. According to the Wiener-Khinchin theorem, the PSD is the Fourier transform of the autocorrelation function.",
+        "c": "Incorrect. They are related for wide-sense stationary random processes.",
+        "d": "Incorrect. The relationship holds for any wide-sense stationary process, not just Gaussian."
+      },
+      "correctAnswer": "b",
       "difficulty": "beginner"
     }
   ]
