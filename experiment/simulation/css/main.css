@@ -25,3 +25,155 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 #status { text-align: center; margin-top: 10px; font-weight: 600; color: #17a2b8; height: 20px; }
 .comparison-section .input-group { display: flex; align-items: center; gap: 10px; }
 .comparison-section .input-group label { margin-bottom: 0; flex-basis: 40%; }
+
+/* Responsive design for mobile devices */
+@media screen and (max-width: 768px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    padding: 8px;
+    gap: 15px;
+  }
+  
+  .panel {
+    width: 100%;
+    margin-bottom: 15px;
+    max-height: none;
+  }
+  
+  .input-panel {
+    order: 1;
+    overflow-y: visible;
+  }
+  
+  .simulation-panel {
+    order: 2;
+    height: 350px; /* Fixed height for simulation view on mobile */
+  }
+  
+  .output-panel {
+    order: 3;
+  }
+  
+  .chart-container {
+    height: 250px;
+    margin-bottom: 20px;
+  }
+  
+  .btn {
+    padding: 12px 15px;
+    font-size: 16px; /* Slightly larger buttons for touch targets */
+  }
+  
+  .input-group input {
+    padding: 12px;
+    font-size: 16px; /* Slightly larger input for better mobile usability */
+  }
+  
+  /* Improve spacing in stats section */
+  .stats {
+    padding: 12px;
+    margin-top: 15px;
+  }
+  
+  .stat-item {
+    font-size: 14px;
+    padding: 5px 0;
+  }
+  
+  /* Make title more compact on mobile */
+  .title {
+    font-size: 16px;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+  }
+  
+  /* Improve spacing in comparison section */
+  .comparison-section .input-group {
+    margin-bottom: 12px;
+  }
+}
+
+/* Extra small devices (phones under 576px) */
+@media screen and (max-width: 576px) {
+  .container {
+    padding: 5px;
+    gap: 10px;
+  }
+  
+  .panel {
+    padding: 15px;
+    border-radius: 10px;
+  }
+  
+  .simulation-panel {
+    height: 300px;
+  }
+  
+  .chart-container {
+    height: 220px;
+  }
+  
+  /* Make inputs more finger-friendly on very small screens */
+  .input-group {
+    margin-bottom: 12px;
+  }
+  
+  .input-group label {
+    font-size: 14px;
+  }
+  
+  /* Optimize comparison section for small screens */
+  .comparison-section .input-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .comparison-section .input-group label {
+    margin-bottom: 5px;
+    flex-basis: auto;
+  }
+  
+  .comparison-section .input-group input {
+    width: 100%;
+  }
+}
+
+/* Very small devices (under 400px) */
+@media screen and (max-width: 400px) {
+  .container {
+    padding: 3px;
+    gap: 8px;
+  }
+  
+  .panel {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .simulation-panel {
+    height: 250px; /* Even smaller for tiny screens */
+  }
+  
+  .btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  .title {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+  
+  .stats {
+    padding: 10px;
+    font-size: 12px;
+  }
+  
+  .stat-item {
+    font-size: 12px;
+  }
+}
