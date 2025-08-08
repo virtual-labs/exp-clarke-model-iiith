@@ -1,448 +1,367 @@
-     // Global variables for charts and animation
-     let autocorrelationChart = null;
-     let spectrumChart = null;
-     let animationRunning = false;
-     let animationId = null;
-     let currentAngle = 0; // Angle in degrees for mobile receiver position
-     let lastTime = 0;     // For deltaTime calculation in animation
-     
-     // Bessel function J0 approximation (good for small to medium arguments)
-     function besselJ0(x) {
-         if (Math.abs(x) < 8) {
-             const y = x * x;
-             const ans1 = 57568490574.0 + y * (-13362590354.0 + y * (651619640.7 + 
-                 y * (-11214424.18 + y * (77392.33017 + y * (-184.9052456)))));
-             const ans2 = 57568490411.0 + y * (1029532985.0 + y * (9494680.718 + 
-                 y * (59272.64853 + y * (267.8532712 + y * 1.0))));
-             return ans1 / ans2;
-         } else {
-             const z = 8.0 / x;
-             const y = z * z;
-             const xx = x - 0.785398164;
-             const ans1 = 1.0 + y * (-0.1098628627e-2 + y * (0.2734510407e-4 + 
-                 y * (-0.2073370639e-5 + y * 0.2093887211e-6)));
-             const ans2 = -0.1562499995e-1 + y * (0.1430488765e-3 + 
-                 y * (-0.6911147651e-5 + y * (0.7621095161e-6 - y * 0.934945152e-7)));
-             return Math.sqrt(0.636619772 / x) * (Math.cos(xx) * ans1 - z * Math.sin(xx) * ans2);
-         }
-     }
-     
-     // Initialize sliders and their displays
-     function initializeControls() {
-         const sliders = ['amplitude', 'bandwidth', 'dopplerSpread', 'coherenceTime', 'numSamples', 'numPaths', 'velocity'];
-         
-         sliders.forEach(id => {
-             const slider = document.getElementById(id);
-             const display = document.getElementById(id + 'Value');
-             
-             if (slider && display) {
-                 slider.oninput = function() {
-                     display.textContent = this.value;
-                     if (id === 'numPaths') {
-                         document.getElementById('scattererCount').textContent = this.value;
-                         drawOneRingModel(); // Redraw if number of paths changes
-                     } else if (id === 'velocity') {
-                         document.getElementById('currentVelocity').textContent = this.value;
-                         // If animation is not running, still update the velocity vector display
-                         if (!animationRunning) drawOneRingModel(); 
-                     }
-                 };
-             }
-         });
-         
-         // Initialize display values from defaults
-         document.getElementById('scattererCount').textContent = document.getElementById('numPaths').value;
-         document.getElementById('currentVelocity').textContent = document.getElementById('velocity').value;
-         
-         // Animation toggle button
-         const toggleBtn = document.getElementById('toggleAnimation');
-         toggleBtn.onclick = function() {
-             if (animationRunning) {
-                 stopAnimation();
-                 this.textContent = 'Start Animation';
-                 this.style.background = '#48bb78';
-             } else {
-                 startAnimation();
-                 this.textContent = 'Stop Animation';
-                 this.style.background = '#e53e3e';
-             }
-         };
-     }
-     
-     // One-Ring Model Drawing Functions
-     function drawOneRingModel() {
-         const canvas = document.getElementById('oneRingCanvas');
-         const ctx = canvas.getContext('2d');
-         const centerX = canvas.width / 2;
-         const centerY = canvas.height / 2;
-         const radius = 120; // Fixed radius for scatterer ring
-         const K = parseInt(document.getElementById('numPaths').value);
-         const velocity = parseFloat(document.getElementById('velocity').value);
-         
-         ctx.clearRect(0, 0, canvas.width, canvas.height);
-         ctx.fillStyle = '#f8fafc';
-         ctx.fillRect(0, 0, canvas.width, canvas.height);
-         
-         ctx.strokeStyle = '#cbd5e0';
-         ctx.lineWidth = 2;
-         ctx.setLineDash([5, 5]);
-         ctx.beginPath();
-         ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-         ctx.stroke();
-         ctx.setLineDash([]);
-         
-         for (let i = 0; i < K; i++) {
-             const angle = (2 * Math.PI * i) / K;
-             const x = centerX + radius * Math.cos(angle);
-             const y = centerY + radius * Math.sin(angle);
-             ctx.fillStyle = '#e53e3e';
-             ctx.beginPath();
-             ctx.arc(x, y, 5, 0, 2 * Math.PI);
-             ctx.fill();
-             ctx.fillStyle = '#2d3748';
-             ctx.font = '11px Arial';
-             ctx.textAlign = 'center';
-             ctx.fillText(`S${i+1}`, x, y - 12);
-         }
-         
-         ctx.fillStyle = '#f56565';
-         ctx.beginPath();
-         ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
-         ctx.fill();
-         ctx.fillStyle = 'white';
-         ctx.font = 'bold 11px Arial';
-         ctx.textAlign = 'center';
-         ctx.fillText('Tx', centerX, centerY + 4);
-         
-         const mobileAngleRad = (currentAngle * Math.PI) / 180;
-         const mobileRadius = radius * 0.35;
-         const mobileX = centerX + mobileRadius * Math.cos(mobileAngleRad);
-         const mobileY = centerY + mobileRadius * Math.sin(mobileAngleRad);
-         
-         ctx.fillStyle = '#3182ce';
-         ctx.beginPath();
-         ctx.arc(mobileX, mobileY, 10, 0, 2 * Math.PI);
-         ctx.fill();
-         ctx.fillStyle = 'white';
-         ctx.font = 'bold 11px Arial';
-         ctx.fillText('Rx', mobileX, mobileY + 4);
-         
-         ctx.strokeStyle = '#90cdf4';
-         ctx.lineWidth = 1;
-         ctx.setLineDash([2, 2]);
-         ctx.beginPath();
-         ctx.arc(centerX, centerY, mobileRadius, 0, 2 * Math.PI);
-         ctx.stroke();
-         ctx.setLineDash([]);
-         
-         ctx.lineWidth = 2;
-         ctx.globalAlpha = 0.7;
-         for (let i = 0; i < K; i++) {
-             const scatterAngle = (2 * Math.PI * i) / K;
-             const scatterX = centerX + radius * Math.cos(scatterAngle);
-             const scatterY = centerY + radius * Math.sin(scatterAngle);
-             
-             ctx.strokeStyle = '#48bb78';
-             ctx.beginPath();
-             ctx.moveTo(centerX, centerY);
-             ctx.lineTo(scatterX, scatterY);
-             ctx.stroke();
-             drawSignalArrow(ctx, centerX, centerY, scatterX, scatterY, '#48bb78', 0.7);
-             
-             ctx.strokeStyle = '#2b6cb0';
-             ctx.beginPath();
-             ctx.moveTo(scatterX, scatterY);
-             ctx.lineTo(mobileX, mobileY);
-             ctx.stroke();
-             drawSignalArrow(ctx, scatterX, scatterY, mobileX, mobileY, '#2b6cb0', 0.7);
-         }
-         ctx.globalAlpha = 1.0;
-         
-         const velLength = Math.min(50, velocity * 2);
-         const velAngleRad = mobileAngleRad + Math.PI/2; 
-         const velEndX = mobileX + velLength * Math.cos(velAngleRad);
-         const velEndY = mobileY + velLength * Math.sin(velAngleRad);
-         
-         ctx.strokeStyle = '#ed8936';
-         ctx.lineWidth = 4;
-         ctx.beginPath();
-         ctx.moveTo(mobileX, mobileY);
-         ctx.lineTo(velEndX, velEndY);
-         ctx.stroke();
-         drawSignalArrow(ctx, mobileX, mobileY, velEndX, velEndY, '#ed8936', 1.0);
-         
-         ctx.fillStyle = '#ed8936';
-         ctx.font = 'bold 14px Arial';
-         ctx.textAlign = 'left'; // Adjust alignment for better positioning
-         ctx.fillText(`v=${velocity}m/s`, velEndX + 5, velEndY + 5); // Adjusted label position
-         
-         drawLegend(ctx, canvas.width - 140, 20);
-     }
-     
-     function drawSignalArrow(ctx, fromX, fromY, toX, toY, color, alpha = 1.0) {
-         const angle = Math.atan2(toY - fromY, toX - fromX);
-         const arrowLength = 12;
-         const arrowAngle = Math.PI / 5;
-         
-         const arrowPos = 0.75;
-         const arrowX = fromX + (toX - fromX) * arrowPos;
-         const arrowY = fromY + (toY - fromY) * arrowPos;
-         
-         ctx.save();
-         ctx.globalAlpha = alpha;
-         ctx.strokeStyle = color;
-         ctx.fillStyle = color;
-         ctx.lineWidth = 2;
-         
-         ctx.beginPath();
-         ctx.moveTo(arrowX, arrowY);
-         ctx.lineTo(arrowX - arrowLength * Math.cos(angle - arrowAngle), 
-                   arrowY - arrowLength * Math.sin(angle - arrowAngle));
-         ctx.lineTo(arrowX - arrowLength * Math.cos(angle + arrowAngle), 
-                   arrowY - arrowLength * Math.sin(angle + arrowAngle));
-         ctx.closePath();
-         ctx.fill();
-         
-         ctx.restore();
-     }
-     
-     function drawLegend(ctx, x, y) {
-         ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-         ctx.fillRect(x - 10, y - 5, 140, 140);
-         ctx.strokeStyle = '#e2e8f0';
-         ctx.lineWidth = 1;
-         ctx.strokeRect(x - 10, y - 5, 140, 140);
-         
-         ctx.font = '11px Arial';
-         ctx.textAlign = 'left';
-         
-         ctx.fillStyle = '#f56565'; ctx.beginPath(); ctx.arc(x, y + 12, 5, 0, 2 * Math.PI); ctx.fill();
-         ctx.fillStyle = '#2d3748'; ctx.fillText('Transmitter', x + 12, y + 16);
-         
-         ctx.fillStyle = '#3182ce'; ctx.beginPath(); ctx.arc(x, y + 32, 5, 0, 2 * Math.PI); ctx.fill();
-         ctx.fillStyle = '#2d3748'; ctx.fillText('Mobile Rx', x + 12, y + 36);
-         
-         ctx.fillStyle = '#e53e3e'; ctx.beginPath(); ctx.arc(x, y + 52, 4, 0, 2 * Math.PI); ctx.fill();
-         ctx.fillStyle = '#2d3748'; ctx.fillText('Scatterers', x + 12, y + 56);
-         
-         ctx.strokeStyle = '#48bb78'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y + 74); ctx.lineTo(x + 20, y + 74); ctx.stroke();
-         ctx.fillStyle = '#48bb78'; ctx.beginPath(); ctx.moveTo(x + 15, y + 74); ctx.lineTo(x + 12, y + 71); ctx.lineTo(x + 12, y + 77); ctx.closePath(); ctx.fill();
-         ctx.fillStyle = '#2d3748'; ctx.fillText('Tx → Scatterer', x + 25, y + 78);
-         
-         ctx.strokeStyle = '#2b6cb0'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y + 94); ctx.lineTo(x + 20, y + 94); ctx.stroke();
-         ctx.fillStyle = '#2b6cb0'; ctx.beginPath(); ctx.moveTo(x + 15, y + 94); ctx.lineTo(x + 12, y + 91); ctx.lineTo(x + 12, y + 97); ctx.closePath(); ctx.fill();
-         ctx.fillStyle = '#2d3748'; ctx.fillText('Scatterer → Rx', x + 25, y + 98);
-         
-         ctx.strokeStyle = '#ed8936'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, y + 114); ctx.lineTo(x + 20, y + 114); ctx.stroke();
-         ctx.fillStyle = '#ed8936'; ctx.beginPath(); ctx.moveTo(x + 15, y + 114); ctx.lineTo(x + 12, y + 111); ctx.lineTo(x + 12, y + 117); ctx.closePath(); ctx.fill();
-         ctx.fillStyle = '#2d3748'; ctx.fillText('Velocity', x + 25, y + 118);
-     }
-     
-     // Animation functions
-     function startAnimation() {
-         if (!animationRunning) { // Prevent multiple animation loops
-             animationRunning = true;
-             lastTime = performance.now(); // Initialize lastTime for the first frame
-             animationId = requestAnimationFrame(animate); // Start the animation loop
-         }
-     }
-     
-     function stopAnimation() {
-         animationRunning = false;
-         if (animationId) {
-             cancelAnimationFrame(animationId);
-             animationId = null; // Clear the animation ID
-         }
-     }
-     
-     function animate(currentTime) {
-         if (!animationRunning) return; // Stop if animationRunning is false
 
-         if (!lastTime) { // Fallback for the first frame if lastTime wasn't set by startAnimation
-             lastTime = currentTime;
-         }
-         const deltaTime = currentTime - lastTime; // Time elapsed since last frame in milliseconds
-         lastTime = currentTime;
-         
-         const velocity = parseFloat(document.getElementById('velocity').value);
-         // Angular speed factor: 0.18 degrees per "ideal 60fps frame" for a velocity unit of 1.
-         // (1000 / 60) is the duration of one frame at 60 FPS in ms (approx 16.67ms)
-         const angularSpeedFactor = 0.18; 
-         const angularChange = velocity * angularSpeedFactor * (deltaTime / (1000 / 60));
-         
-         currentAngle = (currentAngle + angularChange) % 360;
-         drawOneRingModel(); // Redraw the model with the new angle
-         
-         animationId = requestAnimationFrame(animate); // Request the next frame
-     }
+    const NUM_RECEIVERS = 3;
+    const RECEIVER_COLORS = ['#007bff', '#fd7e14', '#dc3545'];
+    const c = 3e8;
+    const ANIMATION_SPEED_MULTIPLIER = 10;
+    const PHYSICS_DT = 0.005; // 200 Hz sample rate
 
-     // Calculate autocorrelation
-     function calculateAutocorrelation(a, W, Dv, numSamples) {
-         const autocorr = [];
-         const nValues = [];
-         
-         for (let n = 0; n < numSamples; n++) {
-             nValues.push(n);
-             const arg = n * Math.PI * Dv / W;
-             const R0n = 2 * a * a * Math.PI * besselJ0(arg);
-             autocorr.push(R0n);
-         }
-         
-         return { nValues, autocorr };
-     }
-     
-     // Calculate Doppler spectrum
-     function calculateDopplerSpectrum(a, W, Dv, numSamples) {
-         const spectrum = [];
-         const frequencies = [];
-         const maxFreq = Dv / (2 * W); // Max Doppler frequency shift, f_m = Dv / (2W) is incorrect. Max Doppler is Dv.
-                                       // The spectrum S(f) is defined for |f| <= f_m. The formula uses f_m as Dv.
-                                       // The formula in the HTML is S(f) = ... for |f| <= D_v / (2W). This is unusual.
-                                       // Clarke's model classical Doppler spectrum is non-zero for |f| <= f_D, where f_D is max Doppler shift.
-                                       // Assuming D_v in the HTML means f_D (max Doppler shift).
-                                       // The argument of the square root should be 1 - (f/f_D)^2.
-                                       // If the formula given: S(f) for |f| <= Dᵥ/(2W) is taken literally, then f_max_plot = Dᵥ/(2W).
-                                       // Let's use f_D = D_v (Doppler Spread = Max Doppler Shift). The spectrum should be for |f| <= D_v.
-                                       // The given formula S(f) = 4a²W / (π√(1-(2fW/Dᵥ)²)) implies the x-axis limit for f is Dᵥ/(2W).
-                                       // Let's stick to the formula provided in the HTML: |f| <= D_v / (2W)
-         const fLimit = Dv / (2 * W);
+    let obstacles = [], pathPoints = [], pathProperties = {};
+    let receivers = [], simStates = [], simulationData = [];
+    let animationId = null, simAreaSize = 2000, lastTimestamp = 0;
+    let autocorrelationChart = null, psdChart = null;
 
+    // --- INITIALIZATION ---
+    window.onload = () => { initCharts(); generateSimulation(); };
+    window.addEventListener('resize', () => { if (autocorrelationChart) autocorrelationChart.resize(); if (psdChart) psdChart.resize(); drawSimulation(); });
 
-         for (let i = 0; i < numSamples; i++) {
-             // Generate frequencies from -fLimit to +fLimit
-             const f = -fLimit + (i / (numSamples - 1)) * (2 * fLimit);
-             frequencies.push(f);
-             
-             const absF = Math.abs(f);
-             if (absF <= fLimit) { // Check if f is within the valid range
-                 const termInsideSqrt = 1 - Math.pow((2 * f * W) / Dv, 2);
-                 if (termInsideSqrt > 0) { // Ensure argument of sqrt is positive
-                     const denominator = Math.PI * Math.sqrt(termInsideSqrt);
-                     const Sf = (4 * a * a * W) / denominator;
-                     spectrum.push(Sf);
-                 } else {
-                     // This case (termInsideSqrt <= 0) should ideally not happen if |f| <= fLimit.
-                     // It might happen due to floating point inaccuracies at the very edge |f| = fLimit.
-                     // Or if the condition |f| <= fLimit is slightly violated.
-                     // Push a large value or handle appropriately; pushing 0 for simplicity if it results in NaN/Infinity.
-                     spectrum.push(spectrum.length > 0 ? spectrum[spectrum.length-1] : 0); // Use previous or 0
-                 }
-             } else {
-                 spectrum.push(0); // Spectrum is zero outside this range
-             }
-         }
-         
-         return { frequencies, spectrum };
-     }
-     
-     // Create or update autocorrelation chart
-     function updateAutocorrelationChart(nValues, autocorr) {
-         const ctx = document.getElementById('autocorrelationChart').getContext('2d');
-         
-         if (autocorrelationChart) {
-             autocorrelationChart.destroy();
-         }
-         
-         autocorrelationChart = new Chart(ctx, {
-             type: 'line',
-             data: {
-                 labels: nValues,
-                 datasets: [{
-                     label: 'R₀[n]',
-                     data: autocorr,
-                     borderColor: '#667eea',
-                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                     borderWidth: 2,
-                     fill: true,
-                     tension: 0.4,
-                     pointRadius: 1,
-                     pointHoverRadius: 4
-                 }]
-             },
-             options: {
-                 responsive: true,
-                 maintainAspectRatio: false,
-                 plugins: {
-                     legend: { display: true, position: 'top' }
-                 },
-                 scales: {
-                     x: {
-                         title: { display: true, text: 'Sample Index (n)', font: { size: 12, weight: 'bold' }},
-                         grid: { color: '#e2e8f0' }
-                     },
-                     y: {
-                         title: { display: true, text: 'R₀[n]', font: { size: 12, weight: 'bold' }},
-                         grid: { color: '#e2e8f0' }
-                     }
-                 },
-                 interaction: { intersect: false, mode: 'index' }
-             }
-         });
-     }
-     
-     // Create or update spectrum chart
-     function updateSpectrumChart(frequencies, spectrum) {
-         const ctx = document.getElementById('spectrumChart').getContext('2d');
-         
-         if (spectrumChart) {
-             spectrumChart.destroy();
-         }
-         
-         spectrumChart = new Chart(ctx, {
-             type: 'line',
-             data: {
-                 labels: frequencies.map(f => f.toFixed(3)), // Increased precision for frequency labels
-                 datasets: [{
-                     label: 'S(f)',
-                     data: spectrum,
-                     borderColor: '#48bb78',
-                     backgroundColor: 'rgba(72, 187, 120, 0.1)',
-                     borderWidth: 2,
-                     fill: true,
-                     tension: 0.1, // Low tension for 'spiky' spectrum
-                     pointRadius: 0,
-                     pointHoverRadius: 4
-                 }]
-             },
-             options: {
-                 responsive: true,
-                 maintainAspectRatio: false,
-                 plugins: {
-                     legend: { display: true, position: 'top' }
-                 },
-                 scales: {
-                     x: {
-                         title: { display: true, text: 'Frequency (f) [Hz]', font: { size: 12, weight: 'bold' }},
-                         grid: { color: '#e2e8f0' }
-                     },
-                     y: {
-                         title: { display: true, text: 'Power Spectral Density S(f)', font: { size: 12, weight: 'bold' }},
-                         grid: { color: '#e2e8f0' },
-                         // beginAtZero: true // Useful if spectrum can be negative (not typical for PSD)
-                     }
-                 },
-                 interaction: { intersect: false, mode: 'index' }
-             }
-         });
-     }
-     
-     // Main update function, called by button
-     function updatePlots() {
-         const a = parseFloat(document.getElementById('amplitude').value);
-         const W = parseFloat(document.getElementById('bandwidth').value);
-         const Dv = parseFloat(document.getElementById('dopplerSpread').value);
-         const numSamples = parseInt(document.getElementById('numSamples').value);
-         
-         const { nValues, autocorr } = calculateAutocorrelation(a, W, Dv, numSamples);
-         updateAutocorrelationChart(nValues, autocorr);
-         
-         const { frequencies, spectrum } = calculateDopplerSpectrum(a, W, Dv, numSamples);
-         updateSpectrumChart(frequencies, spectrum);
-     }
-     
-     // Initialize the application on window load
-     window.onload = function() {
-         initializeControls();
-         drawOneRingModel(); // Initial draw of the one-ring model
-         updatePlots();      // Initial calculation and display of plots
-     };
+    function initCharts() {
+        const commonOptions = { responsive: true, maintainAspectRatio: false, animation: { duration: 500 }, interaction: { intersect: false, mode: 'index' } };
+        autocorrelationChart = new Chart(document.getElementById('autocorrelationChart').getContext('2d'), {
+            type: 'line', data: { labels: [], datasets: [] },
+            options: { ...commonOptions, plugins: { title: { display: true, text: 'Autocorrelation Comparison by Velocity' }}, scales: { x: { title: { display: true, text: 'Time Lag τ (s)' }}, y: { title: { display: true, text: 'Correlation' }, min: -0.1, max: 1.1 }}}
+        });
+        psdChart = new Chart(document.getElementById('psdChart').getContext('2d'), {
+            type: 'line', data: { labels: [], datasets: [
+                 { label: 'Simulated PSD', data: [], borderColor: '#fd7e14', tension: 0.1, pointRadius: 0, fill: true, backgroundColor: 'rgba(253, 126, 20, 0.2)' },
+                 { label: "Theoretical Jakes' Spectrum", data: [], borderColor: '#28a745', borderDash: [5, 5], tension: 0.2, pointRadius: 0 }
+            ]},
+            options: { ...commonOptions, plugins: { title: { display: true, text: 'Power Spectral Density' }}, scales: { x: { title: { display: true, text: 'Frequency Shift from fc (Hz)' }}, y: { title: { display: true, text: 'PSD (dB)' }}}}
+        });
+    }
+
+    function createCarIcon(color) {
+        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11C5.84 5 5.28 5.42 5.08 6.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`;
+        return `data:image/svg+xml;base64,${btoa(svgString)}`;
+    }
+    const antennaIcon = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#28a745"><path d="M12 4L8 8h3v12h2V8h3l-4-4zM4 18v-2h2v2H4zm14 0v-2h2v2h-2zM6 14v-2h2v2H6zm10 0v-2h2v2h-2z"/></svg>`)}`;
+
+    function generateSimulation() {
+        stopAnimation();
+        simAreaSize = parseFloat(document.getElementById('simArea').value) * 1000;
+        generateObstacles();
+        generatePath();
+        pathProperties = calculatePathProperties();
+        document.getElementById('pathLength').textContent = `${pathProperties.totalLength.toFixed(0)} m`;
+        resetAllReceivers();
+        clearAllPlots();
+        drawSimulation();
+    }
+
+    function generateObstacles() {
+        obstacles = [];
+        const rate = parseFloat(document.getElementById('obstacleRate').value), areaKm2 = (simAreaSize / 1000) ** 2, meanNumObstacles = rate * areaKm2;
+        const numObstacles = Math.floor(Math.random() * meanNumObstacles * 2);
+        for (let i = 0; i < numObstacles; i++) obstacles.push({ x: (Math.random() - 0.5) * simAreaSize, y: (Math.random() - 0.5) * simAreaSize });
+        document.getElementById('totalObstacles').textContent = obstacles.length;
+    }
+
+    function generatePath() {
+        pathPoints = [];
+        const numPoints = parseInt(document.getElementById('numPoints').value);
+        if (numPoints < 3) return;
+        for (let i = 0; i < numPoints; i++) pathPoints.push({ x: (Math.random() - 0.5) * simAreaSize * 0.8, y: (Math.random() - 0.5) * simAreaSize * 0.8 });
+        pathPoints.sort((a, b) => Math.atan2(a.y, a.x) - Math.atan2(b.y, b.x));
+        pathPoints.push(pathPoints[0]);
+    }
+
+    function calculatePathProperties() {
+        const segmentLengths = [], segmentVectors = []; let totalLength = 0;
+        if (pathPoints.length < 2) return { segmentLengths, segmentVectors, totalLength };
+        for (let i = 0; i < pathPoints.length - 1; i++) {
+            const p1 = pathPoints[i], p2 = pathPoints[i + 1];
+            const dx = p2.x - p1.x, dy = p2.y - p1.y, len = Math.sqrt(dx * dx + dy * dy);
+            if (len > 0) {
+                segmentLengths.push(len); totalLength += len;
+                segmentVectors.push({ x: dx / len, y: dy / len });
+            }
+        }
+        return { segmentLengths, segmentVectors, totalLength };
+    }
+
+    function resetAllReceivers() {
+        receivers = []; simStates = []; simulationData = [];
+        const startPoint = pathPoints.length > 0 ? pathPoints[0] : { x: 0, y: 0 };
+        for (let i = 0; i < NUM_RECEIVERS; i++) {
+            receivers.push({ x: startPoint.x, y: startPoint.y, color: RECEIVER_COLORS[i] });
+            simStates.push({ isRunning: false, simulationTime: 0, currentSegment: 0, distOnSegment: 0, lapCompleted: false });
+            simulationData.push({ channelCoeffs: [] });
+        }
+    }
+
+    function startMultiVehicleSim() {
+        stopAnimation();
+        resetAllReceivers();
+        clearAllPlots();
+        const velocities = [parseFloat(document.getElementById('v1').value), parseFloat(document.getElementById('v2').value), parseFloat(document.getElementById('v3').value)];
+        if(velocities.some(isNaN) || velocities.some(v => v <= 0)) return alert("Please enter valid, positive velocities for all vehicles.");
+        
+        const maxVelocity = Math.max(...velocities);
+        document.getElementById('lapTime').textContent = `${(pathProperties.totalLength / maxVelocity).toFixed(1)} s`;
+        document.getElementById('status').textContent = "Simulation in progress...";
+
+        for (let i = 0; i < NUM_RECEIVERS; i++) {
+            simStates[i].isRunning = true;
+            simStates[i].velocity = velocities[i];
+        }
+        lastTimestamp = 0;
+        animationId = requestAnimationFrame(animate);
+    }
+
+    function stopAnimation() {
+        if (animationId) cancelAnimationFrame(animationId);
+        animationId = null;
+        simStates.forEach(s => s.isRunning = false);
+        document.getElementById('status').textContent = "Simulation stopped.";
+    }
+
+    function animate(timestamp) {
+        if(lastTimestamp === 0) lastTimestamp = timestamp;
+        const real_dt = (timestamp - lastTimestamp) / 1000;
+        lastTimestamp = timestamp;
+        const timeToSimulateThisFrame = real_dt * ANIMATION_SPEED_MULTIPLIER;
+        const numSteps = Math.ceil(timeToSimulateThisFrame / PHYSICS_DT);
+
+        let allFinished = true;
+        for (let i = 0; i < NUM_RECEIVERS; i++) {
+            if (simStates[i].isRunning) {
+                allFinished = false;
+                for (let step = 0; step < numSteps; step++) {
+                    if (!simStates[i].isRunning) break;
+                    const { lapJustCompleted } = updateReceiverPosition(i, PHYSICS_DT);
+                    if (lapJustCompleted) {
+                        simStates[i].isRunning = false;
+                        simStates[i].lapCompleted = true;
+                        break;
+                    } else {
+                        const velocityVector = pathProperties.segmentVectors[simStates[i].currentSegment];
+                        const channelSample = calculateChannelResponse(i, velocityVector);
+                        simulationData[i].channelCoeffs.push(channelSample);
+                    }
+                }
+            }
+        }
+        drawSimulation();
+
+        if (allFinished || simStates.every(s => s.lapCompleted)) {
+            document.getElementById('status').textContent = "All vehicles finished. Plotting results...";
+            plotComparisonResults();
+            return;
+        }
+        animationId = requestAnimationFrame(animate);
+    }
+
+    function updateReceiverPosition(index, dt) {
+        const state = simStates[index], receiver = receivers[index], props = pathProperties;
+        state.simulationTime += dt;
+        let distToMove = state.velocity * dt;
+        while (distToMove > 0) {
+            const currentSegmentLength = props.segmentLengths[state.currentSegment];
+            const remainingDistOnSegment = currentSegmentLength - state.distOnSegment;
+            if (distToMove >= remainingDistOnSegment) {
+                distToMove -= remainingDistOnSegment;
+                state.distOnSegment = 0;
+                const prevSegment = state.currentSegment;
+                state.currentSegment = (state.currentSegment + 1) % props.segmentVectors.length;
+                if(state.currentSegment < prevSegment) {
+                    receiver.x = pathPoints[0].x; receiver.y = pathPoints[0].y;
+                    return { lapJustCompleted: true };
+                }
+            } else {
+                state.distOnSegment += distToMove;
+                distToMove = 0;
+            }
+        }
+        const startPoint = pathPoints[state.currentSegment], segmentVector = props.segmentVectors[state.currentSegment];
+        receiver.x = startPoint.x + segmentVector.x * state.distOnSegment;
+        receiver.y = startPoint.y + segmentVector.y * state.distOnSegment;
+        return { lapJustCompleted: false };
+    }
+
+    function calculateChannelResponse(receiverIndex, velocityVector) {
+        const state = simStates[receiverIndex], receiver = receivers[receiverIndex];
+        const frequency = parseFloat(document.getElementById('frequency').value) * 1e9;
+        const threshold = parseFloat(document.getElementById('threshold').value);
+        const fD = frequency * state.velocity / c, d0 = Math.sqrt(receiver.x ** 2 + receiver.y ** 2);
+        
+        const relevantObstacles = obstacles.filter(obs => {
+            const d1 = Math.sqrt(obs.x ** 2 + obs.y ** 2), d2 = Math.sqrt((obs.x - receiver.x) ** 2 + (obs.y - receiver.y) ** 2);
+            return Math.abs((d1 + d2) - d0) <= threshold;
+        });
+        const angles = relevantObstacles.map(obs => {
+            const signalVector = { x: obs.x - receiver.x, y: obs.y - receiver.y };
+            const dotProduct = signalVector.x * velocityVector.x + signalVector.y * velocityVector.y, magSignal = Math.sqrt(signalVector.x ** 2 + signalVector.y ** 2);
+            return magSignal === 0 ? 0 : Math.acos(Math.max(-1, Math.min(1, dotProduct / magSignal)));
+        });
+
+        let realPart = 0, imagPart = 0;
+        if (angles.length > 0) {
+            angles.forEach(angle => { const phase = 2 * Math.PI * fD * Math.cos(angle) * state.simulationTime; realPart += Math.cos(phase); imagPart += Math.sin(phase); });
+            const norm = Math.sqrt(angles.length);
+            realPart /= norm; imagPart /= norm;
+        }
+        return { real: realPart, imag: imagPart, time: state.simulationTime };
+    }
+
+    function plotComparisonResults() {
+        clearAllPlots();
+        
+        // --- Autocorrelation Plot ---
+        const MAX_TIME_LAG = 0.025; // Zoom in to the first 50 milliseconds
+        let acfPlotDatasets = [], acfMasterLabels = [];
+
+        for(let i=0; i < NUM_RECEIVERS; i++) {
+            const data = simulationData[i].channelCoeffs;
+            if (data.length < 50) continue;
+            
+            const avgDt = data.length > 1 ? (data[data.length-1].time - data[0].time) / (data.length - 1) : 0;
+            if (avgDt <= 0) continue;
+            
+            const maxLagInSamples = Math.ceil(MAX_TIME_LAG / avgDt);
+            const { autocorr, lags } = calculateAutocorrelation(data, avgDt, maxLagInSamples);
+            
+            if (lags.length > acfMasterLabels.length) {
+                acfMasterLabels = lags.map(l => l.toFixed(4));
+            }
+
+            acfPlotDatasets.push({
+                label: `V = ${simStates[i].velocity} m/s`,
+                data: autocorr, borderColor: RECEIVER_COLORS[i],
+                borderWidth: 2.5, tension: 0.1, pointRadius: 0
+            });
+        }
+        autocorrelationChart.data.labels = acfMasterLabels;
+        autocorrelationChart.data.datasets = acfPlotDatasets;
+        autocorrelationChart.update();
+
+        if (simulationData[0] && simulationData[0].channelCoeffs.length > 256) {
+            const psdData = simulationData[0].channelCoeffs;
+            const psdState = simStates[0];
+            const avgDt = (psdData[psdData.length-1].time - psdData[0].time) / (psdData.length - 1);
+            const sampleRate = 1 / avgDt;
+
+            const { frequencies, psd } = calculatePSD_Welch(psdData, sampleRate);
+            const fD = (parseFloat(document.getElementById('frequency').value) * 1e9 * psdState.velocity) / c;
+            const { theoreticalFreqs, theoreticalPSD } = calculateTheoreticalPSD(fD, psd);
+
+            psdChart.data.labels = theoreticalFreqs.map(f => f.toFixed(1));
+            psdChart.data.datasets[0].label = `Simulated PSD (V=${psdState.velocity} m/s)`;
+            psdChart.data.datasets[0].data = psd;
+            psdChart.data.datasets[1].label = `Theoretical (V=${psdState.velocity} m/s)`;
+            psdChart.data.datasets[1].data = theoreticalPSD;
+            psdChart.update();
+        }
+    }
+
+    function calculateAutocorrelation(data, avgDt, maxLagInSamples) {
+        const autocorr = [], lags = [];
+        const maxLag = Math.min(maxLagInSamples || data.length - 1, data.length - 1);
+
+        for (let lag = 0; lag <= maxLag; lag++) {
+            let sum_real = 0, sum_imag = 0;
+            for (let i = 0; i < data.length - lag; i++) {
+                const h_t_lag = data[i + lag], h_t_conj = { real: data[i].real, imag: -data[i].imag };
+                sum_real += h_t_lag.real * h_t_conj.real - h_t_lag.imag * h_t_conj.imag;
+                sum_imag += h_t_lag.real * h_t_conj.imag + h_t_lag.imag * h_t_conj.real;
+            }
+            const count = data.length - lag;
+            autocorr.push(Math.sqrt((sum_real / count) ** 2 + (sum_imag / count) ** 2));
+            lags.push(lag * avgDt);
+        }
+        const r0 = autocorr[0] || 1;
+        return { autocorr: autocorr.map(val => val / r0), lags };
+    }
+
+    function calculatePSD_Welch(data, sampleRate, segLen = 256, overlap = 0.5) {
+        const N = data.length; const step = segLen * (1 - overlap);
+        const numSegments = Math.floor((N - segLen) / step) + 1;
+        if (numSegments < 1) return { frequencies: [], psd: [] };
+        const avgSpectrum = new Array(segLen).fill(0);
+        const hannWindow = Array.from({length: segLen}, (_, i) => 0.5 * (1 - Math.cos(2 * Math.PI * i / (segLen - 1))));
+        for (let i = 0; i < numSegments; i++) {
+            const segment = data.slice(i * step, i * step + segLen);
+            const dft_real = new Array(segLen).fill(0), dft_imag = new Array(segLen).fill(0);
+            for (let k = 0; k < segLen; k++) {
+                for (let n = 0; n < segLen; n++) {
+                    const angle = -2 * Math.PI * k * n / segLen;
+                    const windowed = {real: segment[n].real * hannWindow[n], imag: segment[n].imag * hannWindow[n]};
+                    dft_real[k] += windowed.real * Math.cos(angle) - windowed.imag * Math.sin(angle);
+                    dft_imag[k] += windowed.real * Math.sin(angle) + windowed.imag * Math.cos(angle);
+                }
+            }
+            for (let k = 0; k < segLen; k++) avgSpectrum[k] += (dft_real[k]**2 + dft_imag[k]**2);
+        }
+        const windowPower = hannWindow.reduce((sum, val) => sum + val**2, 0);
+        const scale = 1 / (sampleRate * windowPower * numSegments);
+        const periodogram = avgSpectrum.map(val => val * scale);
+        const shiftedPeriodogram = ((arr) => { const mid = Math.ceil(arr.length / 2); return arr.slice(mid).concat(arr.slice(0, mid)); })(periodogram);
+        const psd = shiftedPeriodogram.map(p => 10 * Math.log10(p + 1e-20));
+        const frequencies = Array.from({length: segLen}, (_, i) => (i - Math.floor(segLen/2)) * sampleRate / segLen);
+        return { frequencies, psd };
+    }
+
+    function calculateTheoreticalPSD(fD, simulatedPSD) {
+        const numPoints = 256; const theoreticalFreqs = [], theoreticalPSD = [];
+        const maxSimulatedPSD = Math.max(...simulatedPSD.filter(isFinite));
+        for(let i=0; i < numPoints; i++){
+            const f_norm = -1 + (2 * i / (numPoints - 1));
+            const f = f_norm * fD; theoreticalFreqs.push(f);
+            const term = 1 - (f_norm * f_norm);
+            if (term <= 1e-6) { theoreticalPSD.push(maxSimulatedPSD + 3);
+            } else {
+                const val = 1 / (Math.PI * fD * Math.sqrt(term));
+                theoreticalPSD.push(10 * Math.log10(val));
+            }
+        }
+        const maxTheoreticalPSD = Math.max(...theoreticalPSD.filter(isFinite));
+        const offset = maxSimulatedPSD - maxTheoreticalPSD;
+        return { theoreticalFreqs, theoreticalPSD: theoreticalPSD.map(v => isFinite(v) ? v + offset : NaN) };
+    }
+
+    function clearAllPlots() {
+        autocorrelationChart.data.labels = []; autocorrelationChart.data.datasets = []; autocorrelationChart.update();
+        psdChart.data.labels = []; psdChart.data.datasets.forEach(ds => ds.data = []); psdChart.update();
+    }
+
+    function drawSimulation() {
+        const svg = document.getElementById('simulationSVG'), rect = svg.getBoundingClientRect();
+        const scale = Math.min(rect.width, rect.height) / simAreaSize, centerX = rect.width / 2, centerY = rect.height / 2;
+        svg.innerHTML = '';
+        if (pathPoints.length > 1) {
+            const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            let pathData = `M ${centerX + pathPoints[0].x * scale} ${centerY + pathPoints[0].y * scale}`;
+            for (let i = 1; i < pathPoints.length; i++) pathData += ` L ${centerX + pathPoints[i].x * scale} ${centerY + pathPoints[i].y * scale}`;
+            pathEl.setAttribute('d', pathData);
+            pathEl.setAttribute('fill', 'none'); pathEl.setAttribute('stroke', '#6c757d');
+            pathEl.setAttribute('stroke-width', '2'); pathEl.setAttribute('stroke-dasharray', '5,5');
+            svg.appendChild(pathEl);
+        }
+        if(receivers.length > 0 && simStates.some(s=>s.isRunning)) drawSignalPaths(svg, scale, centerX, centerY, receivers[0]);
+        obstacles.forEach(obs => { const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); circle.setAttribute('cx', centerX + obs.x * scale); circle.setAttribute('cy', centerY + obs.y * scale); circle.setAttribute('r', '4'); circle.setAttribute('fill', '#6c757d'); svg.appendChild(circle); });
+        const txImg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+        const iconSize = 40;
+        txImg.setAttribute('href', antennaIcon); txImg.setAttribute('x', centerX - iconSize / 2); txImg.setAttribute('y', centerY - iconSize / 2); txImg.setAttribute('width', iconSize); txImg.setAttribute('height', iconSize);
+        svg.appendChild(txImg);
+        receivers.forEach(rx => {
+            const rxImg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            rxImg.setAttribute('href', createCarIcon(rx.color));
+            rxImg.setAttribute('x', centerX + rx.x * scale - iconSize / 2);
+            rxImg.setAttribute('y', centerY + rx.y * scale - iconSize / 2);
+            rxImg.setAttribute('width', iconSize);
+            rxImg.setAttribute('height', iconSize);
+            svg.appendChild(rxImg);
+        });
+    }
+
+    function drawSignalPaths(svg, scale, centerX, centerY, receiver) {
+        const threshold = parseFloat(document.getElementById('threshold').value);
+        const d0 = Math.sqrt(receiver.x ** 2 + receiver.y ** 2);
+        obstacles.forEach(obs => {
+            const d1 = Math.sqrt(obs.x ** 2 + obs.y ** 2), d2 = Math.sqrt((obs.x - receiver.x) ** 2 + (obs.y - receiver.y) ** 2);
+            if (Math.abs((d1 + d2) - d0) <= threshold) {
+                const line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line'), line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line1.setAttribute('x1', centerX); line1.setAttribute('y1', centerY); line1.setAttribute('x2', centerX + obs.x * scale); line1.setAttribute('y2', centerY + obs.y * scale); line1.setAttribute('class', 'signal-line');
+                line2.setAttribute('x1', centerX + obs.x * scale); line2.setAttribute('y1', centerY + obs.y * scale); line2.setAttribute('x2', centerX + receiver.x * scale); line2.setAttribute('y2', centerY + receiver.y * scale); line2.setAttribute('class', 'signal-line');
+                svg.appendChild(line1); svg.appendChild(line2);
+            }
+        });
+    }
