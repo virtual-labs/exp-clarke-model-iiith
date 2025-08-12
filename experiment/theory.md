@@ -18,7 +18,9 @@ $$
 
 with respect to the direction of motion. \(K\) is usually assumed to be a large number.
 
+<p align="center">
 <img src="./images/expt4_model.jpeg">
+</p>      
 *System model with arriving signals uniformly distributed in angle around the receiver; receiver motion not shown, but will be there leading to Doppler effects*
 
 The MPC arriving at angle \(\theta\) has a delay of \(\tau_\theta(t)\) and a time-invariant gain \(a_\theta\). Thus, the input-output relationship is given by:
