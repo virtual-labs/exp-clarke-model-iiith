@@ -79,11 +79,13 @@ S(f)=
 \end{aligned}
 $$
 
-| ![Autocorrelation](expt4_R0.jpeg) <br> *Autocorrelation of the tap gain process* | ![PSD](expt4_PSD.jpeg) <br> *Power spectral density of tap gain process* |
+| <img src="./images/expt4_R0.jpeg"> <br> *Autocorrelation of the tap gain process* | <img src="./images/expt4_PSD.jpeg"> <br> *Power spectral density of tap gain process* |
 |:----------------------------------------------------------------------------------:|:--------------------------------------------------------------------------:|
 
 Finally, we can define the coherence time as the time it takes for the auto-correlation function to go below a certain threshold for the first time. Let us say this threshold is \(\alpha\). Then, the coherence time is the smallest value of \(\frac{n}{W}\) such that \(R_0[n] = \alpha R_0[0]\), yielding the expression:
 
-\[
+$$
+\begin{aligned}
 T_c = \frac{J_0^{-1}(\alpha)}{\pi D_s}
-\]
+\end{aligned}
+$$
