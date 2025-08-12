@@ -1,82 +1,141 @@
-[
-  {
-    "question": "What does isotropic antenna gain pattern mean?",
-    "options": {
-      "A": "The power gain term at the antenna DOES NOT depend on the angle of arrival of the signal",
-      "B": "The power gain term at the antenna DOES NOT depend on the phase of the received signal",
-      "C": "Both of the above",
-      "D": "None of the above"
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "What does isotropic antenna gain pattern mean?",
+      "answers": {
+        "a": "The power gain term at the antenna DOES NOT depend on the angle of arrival of the signal",
+        "b": "The power gain term at the antenna DOES NOT depend on the phase of the received signal",
+        "c": "Both of the above",
+        "d": "None of the above"
+      },
+      "explanations": {
+        "a": "Correct. An isotropic antenna radiates or receives power equally in all directions, so gain is independent of angle.",
+        "b": "Incorrect. Isotropic gain is about angle dependence, not phase dependence.",
+        "c": "Incorrect. Only angle independence is true here.",
+        "d": "Incorrect. 'a' correctly describes isotropic gain."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
     },
-    "answer": "A"
-  },
-  {
-    "question": "If a channel has a complex Gaussian gain term, and all entries of the H matrix are complex Gaussian, then select the correct option:",
-    "options": {
-      "A": "The magnitude of the received signal gain is Rayleigh distributed and the phase is Gaussian distributed",
-      "B": "The magnitude of the received signal gain is Chi-square distributed with degrees of freedom equal to the rank of the H matrix and the phase is uniformly distributed in [0, 2π]",
-      "C": "The magnitude of the received signal gain is Rayleigh distributed and the phase is uniformly distributed in [0, 2π]",
-      "D": "The magnitude of the received signal gain is Chi-square distributed with degrees of freedom equal to the rank of the H matrix and the phase is Gaussian distributed"
+    {
+      "question": "If a channel has a complex Gaussian gain term, and all entries of the H matrix are complex Gaussian, then select the correct option:",
+      "answers": {
+        "a": "The magnitude of the received signal gain is Rayleigh distributed and the phase is Gaussian distributed",
+        "b": "The magnitude of the received signal gain is Chi-square distributed with degrees of freedom equal to the rank of the H matrix and the phase is uniformly distributed in [0, 2π]",
+        "c": "The magnitude of the received signal gain is Rayleigh distributed and the phase is uniformly distributed in [0, 2π]",
+        "d": "The magnitude of the received signal gain is Chi-square distributed with degrees of freedom equal to the rank of the H matrix and the phase is Gaussian distributed"
+      },
+      "explanations": {
+        "a": "Incorrect. The phase is uniform, not Gaussian.",
+        "b": "Incorrect. Chi-square distribution describes power sums, but phase is always uniform.",
+        "c": "Correct. Complex Gaussian channel gains result in Rayleigh distributed magnitude and uniform phase.",
+        "d": "Incorrect. Phase is uniformly distributed, not Gaussian."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
     },
-    "answer": "C"
-  },
-  {
-    "question": "What is the relation between the auto-correlation of a random signal and its power spectral density?",
-    "options": {
-      "A": "The auto-correlation is the Fourier transform of the power spectral density",
-      "B": "The power spectral density is the Fourier transform of the auto-correlation",
-      "C": "They are not related in the case of random signals",
-      "D": "The power spectral density is the Fourier transform of the auto-correlation if and only if the process is Gaussian"
+    {
+      "question": "What is the relation between the auto-correlation of a random signal and its power spectral density?",
+      "answers": {
+        "a": "The auto-correlation is the Fourier transform of the power spectral density",
+        "b": "The power spectral density is the Fourier transform of the auto-correlation",
+        "c": "They are not related in the case of random signals",
+        "d": "The power spectral density is the Fourier transform of the auto-correlation if and only if the process is Gaussian"
+      },
+      "explanations": {
+        "a": "Incorrect. This reverses the correct relationship.",
+        "b": "Correct. The power spectral density (PSD) is the Fourier transform of the auto-correlation function.",
+        "c": "Incorrect. They are always related via Fourier transform for wide-sense stationary signals.",
+        "d": "Incorrect. The relationship holds generally, not only for Gaussian processes."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
     },
-    "answer": "B"
-  },
-  {
-    "question": "In Clarke's model, what is assumed about the angles of arrival of multipath components?",
-    "options": {
-      "A": "They arrive from only one direction",
-      "B": "They are uniformly distributed over [0, 2π]",
-      "C": "They follow a Gaussian distribution",
-      "D": "They depend on the Doppler frequency"
+    {
+      "question": "In Clarke's model, what is assumed about the angles of arrival of multipath components?",
+      "answers": {
+        "a": "They arrive from only one direction",
+        "b": "They are uniformly distributed over [0, 2π]",
+        "c": "They follow a Gaussian distribution",
+        "d": "They depend on the Doppler frequency"
+      },
+      "explanations": {
+        "a": "Incorrect. Multipath components arrive from many directions.",
+        "b": "Correct. Clarke’s model assumes uniform distribution of arrival angles over the full circle.",
+        "c": "Incorrect. Arrival angles are uniformly, not Gaussian, distributed.",
+        "d": "Incorrect. Doppler frequency depends on velocity and angle, but distribution is uniform."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
     },
-    "answer": "B"
-  },
-  {
-    "question": "According to Clarke's model, the Doppler power spectral density of the fading process has which shape?",
-    "options": {
-      "A": "Rectangular",
-      "B": "U-shaped",
-      "C": "Triangular",
-      "D": "Gaussian"
+    {
+      "question": "According to Clarke's model, the Doppler power spectral density of the fading process has which shape?",
+      "answers": {
+        "a": "Rectangular",
+        "b": "U-shaped",
+        "c": "Triangular",
+        "d": "Gaussian"
+      },
+      "explanations": {
+        "a": "Incorrect. PSD is not flat (rectangular).",
+        "b": "Correct. The Doppler PSD in Clarke’s model is U-shaped due to uniform angular arrival.",
+        "c": "Incorrect. PSD shape is not triangular.",
+        "d": "Incorrect. PSD is not Gaussian shaped."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
     },
-    "answer": "B"
-  },
-  {
-    "question": "In Clarke’s model, the maximum Doppler shift f_d depends on:",
-    "options": {
-      "A": "Carrier frequency and mobile speed",
-      "B": "Transmit power and mobile speed",
-      "C": "Carrier frequency and antenna gain",
-      "D": "Mobile speed only"
+    {
+      "question": "In Clarke’s model, the maximum Doppler shift f_d depends on:",
+      "answers": {
+        "a": "Carrier frequency and mobile speed",
+        "b": "Transmit power and mobile speed",
+        "c": "Carrier frequency and antenna gain",
+        "d": "Mobile speed only"
+      },
+      "explanations": {
+        "a": "Correct. Doppler shift is proportional to carrier frequency and velocity.",
+        "b": "Incorrect. Transmit power does not affect Doppler.",
+        "c": "Incorrect. Antenna gain does not affect Doppler.",
+        "d": "Incorrect. Frequency also affects Doppler shift."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
     },
-    "answer": "A"
-  },
-  {
-    "question": "The time autocorrelation function of the fading envelope in Clarke’s model is:",
-    "options": {
-      "A": "A sinc function",
-      "B": "A cosine function",
-      "C": "A Bessel function of the first kind, zero order",
-      "D": "An exponential decay"
+    {
+      "question": "The time autocorrelation function of the fading envelope in Clarke’s model is:",
+      "answers": {
+        "a": "A sinc function",
+        "b": "A cosine function",
+        "c": "A Bessel function of the first kind, zero order",
+        "d": "An exponential decay"
+      },
+      "explanations": {
+        "a": "Incorrect. Sinc function is not the autocorrelation here.",
+        "b": "Incorrect. Cosine is not the autocorrelation.",
+        "c": "Correct. It is a zeroth-order Bessel function of the first kind.",
+        "d": "Incorrect. Exponential decay is for other channel models."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
     },
-    "answer": "C"
-  },
-  {
-    "question": "In Clarke's model, an isotropic scattering environment results in:",
-    "options": {
-      "A": "Rayleigh fading",
-      "B": "Rician fading",
-      "C": "Log-normal fading",
-      "D": "Nakagami fading"
-    },
-    "answer": "A"
-  }
-]
+    {
+      "question": "In Clarke's model, an isotropic scattering environment results in:",
+      "answers": {
+        "a": "Rayleigh fading",
+        "b": "Rician fading",
+        "c": "Log-normal fading",
+        "d": "Nakagami fading"
+      },
+      "explanations": {
+        "a": "Correct. Isotropic scattering with no LOS leads to Rayleigh fading.",
+        "b": "Incorrect. Rician fading requires a strong LOS component.",
+        "c": "Incorrect. Log-normal fading models shadowing, not fast fading.",
+        "d": "Incorrect. Nakagami is a general fading model but not specifically from isotropic scattering."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    }
+  ]
+}
