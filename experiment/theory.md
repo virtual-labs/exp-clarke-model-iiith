@@ -12,7 +12,7 @@ We have a mobile receiver moving at speed \(v\). The transmitted signal is scatt
 
 $$
 \begin{aligned}
-\theta_i \triangleq \frac{2\pi i}{K}, \quad i = 0, 1, \dots, K-1
+      \theta_i \triangleq \frac{2\pi i}{K}, \quad i = 0, 1, \dots, K-1
 \end{aligned}
 $$
 
@@ -25,7 +25,7 @@ The MPC arriving at angle \(\theta\) has a delay of \(\tau_\theta(t)\) and a tim
 
 $$
 \begin{aligned}
-y(t) = \sum_{i=0}^{K-1} a_{\theta_i} x(t - \tau_{\theta_i}(t))
+      y(t) = \sum_{i=0}^{K-1} a_{\theta_i} x(t - \tau_{\theta_i}(t))
 \end{aligned}
 $$
 
@@ -35,7 +35,7 @@ Since we assume flat-fading, i.e., the communication signal bandwidth $W$ is muc
 
 $$
 \begin{aligned}
-y[m] = h_0[m]x[m] + w[m]
+      y[m] = h_0[m]x[m] + w[m]
 \end{aligned}
 $$
 
@@ -45,7 +45,7 @@ Given our assumption that the phase of the arriving signal is uniformly distribu
 
 $$
 \begin{aligned}
-R_0[n] = 2a^2 \pi J_0 \left(\frac{n\pi D_s}{W}\right)
+      R_0[n] = 2a^2 \pi J_0 \left(\frac{n\pi D_s}{W}\right)
 \end{aligned}
 $$
 
@@ -53,7 +53,7 @@ where
 
 $$
 \begin{aligned}
-J_0(x) \triangleq \frac{1}{\pi} \int_0^\pi \exp(jx \cos\theta) \, d\theta
+      J_0(x) \triangleq \frac{1}{\pi} \int_0^\pi \exp(jx \cos\theta) \, d\theta
 \end{aligned}
 $$
 
@@ -61,7 +61,7 @@ is the zeroth order Bessel function of the first kind, and
 
 $$
 \begin{aligned}
-D_s = 2f_c\frac{v}{c}
+      D_s = 2f_c\frac{v}{c}
 \end{aligned}
 $$
 
@@ -71,11 +71,11 @@ The power spectral density (PSD) can be obtained as usual by taking the Fourier 
 
 $$
 \begin{aligned}
-S(f)=
-\begin{cases}
-\frac{4a^2W}{D_s \sqrt{1 - (2fW/D_s)^2}} & -\frac{D_s}{2W} \leq f \leq \frac{D_s}{2W} \\
-0 & \text{otherwise}
-\end{cases}
+      S(f)=
+      \begin{cases}
+      \frac{4a^2W}{D_s \sqrt{1 - (2fW/D_s)^2}} & -\frac{D_s}{2W} \leq f \leq \frac{D_s}{2W} \\
+      0 & \text{otherwise}
+      \end{cases}
 \end{aligned}
 $$
 
@@ -86,6 +86,6 @@ Finally, we can define the coherence time as the time it takes for the auto-corr
 
 $$
 \begin{aligned}
-T_c = \frac{J_0^{-1}(\alpha)}{\pi D_s}
+      T_c = \frac{J_0^{-1}(\alpha)}{\pi D_s}
 \end{aligned}
 $$
