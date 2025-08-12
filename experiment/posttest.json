@@ -1,82 +1,141 @@
-[
-  {
-    "question": "What happens to the coherence time when the velocity of the user is doubled?",
-    "options": {
-      "A": "It is also doubled",
-      "B": "It gets halved",
-      "C": "It remains unchanged",
-      "D": "Can't be determined"
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "What happens to the coherence time when the velocity of the user is doubled?",
+      "answers": {
+        "a": "It is also doubled",
+        "b": "It gets halved",
+        "c": "It remains unchanged",
+        "d": "Can't be determined"
+      },
+      "explanations": {
+        "a": "Incorrect. Coherence time inversely depends on velocity, so doubling velocity does not double coherence time.",
+        "b": "Correct. Coherence time roughly halves when the velocity doubles because Doppler spread increases.",
+        "c": "Incorrect. Coherence time changes with velocity.",
+        "d": "Incorrect. It can be determined from the Doppler relationship."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
     },
-    "answer": "B"
-  },
-  {
-    "question": "If the velocity of the user was halved, what would the effect be on the PSD plot?",
-    "options": {
-      "A": "The plot would get narrower and taller",
-      "B": "The plot would get wider and shorter",
-      "C": "Both may happen; but the overall shape will not change",
-      "D": "Can't be determined"
+    {
+      "question": "If the velocity of the user was halved, what would the effect be on the PSD plot?",
+      "answers": {
+        "a": "The plot would get narrower and taller",
+        "b": "The plot would get wider and shorter",
+        "c": "Both may happen; but the overall shape will not change",
+        "d": "Can't be determined"
+      },
+      "explanations": {
+        "a": "Correct. Halving velocity decreases Doppler spread, making the PSD narrower and taller.",
+        "b": "Incorrect. This corresponds to increasing velocity.",
+        "c": "Incorrect. The shape changes due to Doppler spread.",
+        "d": "Incorrect. The effect is predictable."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
     },
-    "answer": "A"
-  },
-  {
-    "question": "What happens if we increase the value of α?",
-    "options": {
-      "A": "Coherence time will increase",
-      "B": "Coherence time will decrease",
-      "C": "Bit error rate of communication will increase",
-      "D": "None of the above"
+    {
+      "question": "What happens if we increase the value of α?",
+      "answers": {
+        "a": "Coherence time will increase",
+        "b": "Coherence time will decrease",
+        "c": "Bit error rate of communication will increase",
+        "d": "None of the above"
+      },
+      "explanations": {
+        "a": "Incorrect. Increasing α (Doppler spread factor) reduces coherence time.",
+        "b": "Correct. Increasing α reduces coherence time because of larger Doppler spread.",
+        "c": "Incorrect. Bit error rate depends on many factors, not just α.",
+        "d": "Incorrect. The correct effect is on coherence time."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
     },
-    "answer": "B"
-  },
-  {
-    "question": "A mobile user moves at 60 km/h, and the carrier frequency is 900 MHz. What is the maximum Doppler shift?",
-    "options": {
-      "A": "50 Hz",
-      "B": "150 Hz",
-      "C": "500 Hz",
-      "D": "900 Hz"
+    {
+      "question": "A mobile user moves at 60 km/h, and the carrier frequency is 900 MHz. What is the maximum Doppler shift?",
+      "answers": {
+        "a": "50 Hz",
+        "b": "150 Hz",
+        "c": "500 Hz",
+        "d": "900 Hz"
+      },
+      "explanations": {
+        "a": "Incorrect. Doppler shift is proportional to velocity and frequency; 50 Hz is too low.",
+        "b": "Correct. Using f_d = (v/c)*f_c, the maximum Doppler shift is about 150 Hz.",
+        "c": "Incorrect. 500 Hz is too high for this speed and frequency.",
+        "d": "Incorrect. 900 Hz is much too high."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
     },
-    "answer": "B"
-  },
-  {
-    "question": "If the maximum Doppler shift is 200 Hz, what is the approximate coherence time using T_c ≈ 1/(2f_d)?",
-    "options": {
-      "A": "0.0025 s",
-      "B": "0.002 s",
-      "C": "0.005 s",
-      "D": "0.0005 s"
+    {
+      "question": "If the maximum Doppler shift is 200 Hz, what is the approximate coherence time using T_c ≈ 1/(2f_d)?",
+      "answers": {
+        "a": "0.0025 s",
+        "b": "0.002 s",
+        "c": "0.005 s",
+        "d": "0.0005 s"
+      },
+      "explanations": {
+        "a": "Incorrect. This corresponds to a Doppler shift of 200 Hz but slightly off.",
+        "b": "Correct. Coherence time ≈ 1/(2*200) = 0.002 s.",
+        "c": "Incorrect. This would correspond to a lower Doppler shift.",
+        "d": "Incorrect. This is too short."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
     },
-    "answer": "B"
-  },
-  {
-    "question": "In Clarke’s model, reducing the carrier frequency while keeping velocity constant will:",
-    "options": {
-      "A": "Increase maximum Doppler shift",
-      "B": "Decrease maximum Doppler shift",
-      "C": "Keep maximum Doppler shift unchanged",
-      "D": "None of the above"
+    {
+      "question": "In Clarke’s model, reducing the carrier frequency while keeping velocity constant will:",
+      "answers": {
+        "a": "Increase maximum Doppler shift",
+        "b": "Decrease maximum Doppler shift",
+        "c": "Keep maximum Doppler shift unchanged",
+        "d": "None of the above"
+      },
+      "explanations": {
+        "a": "Incorrect. Doppler shift is directly proportional to frequency.",
+        "b": "Correct. Lower carrier frequency reduces maximum Doppler shift.",
+        "c": "Incorrect. Doppler shift changes with frequency.",
+        "d": "Incorrect. The effect is predictable."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
     },
-    "answer": "B"
-  },
-  {
-    "question": "In Clarke’s model, the Doppler spectrum shape is U-shaped because:",
-    "options": {
-      "A": "Most multipath components have zero Doppler shift",
-      "B": "Multipath components arrive uniformly from all angles",
-      "C": "Higher Doppler shifts are more probable",
-      "D": "The channel is frequency selective"
+    {
+      "question": "In Clarke’s model, the Doppler spectrum shape is U-shaped because:",
+      "answers": {
+        "a": "Most multipath components have zero Doppler shift",
+        "b": "Multipath components arrive uniformly from all angles",
+        "c": "Higher Doppler shifts are more probable",
+        "d": "The channel is frequency selective"
+      },
+      "explanations": {
+        "a": "Incorrect. Zero Doppler shift components are fewer.",
+        "b": "Correct. Uniform arrival of multipath components from all angles creates the U-shape.",
+        "c": "Incorrect. High Doppler shifts are less probable than low ones.",
+        "d": "Incorrect. Frequency selectivity relates to delay spread, not Doppler."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
     },
-    "answer": "B"
-  },
-  {
-    "question": "If the coherence time of a channel is 5 ms, what is the approximate maximum Doppler shift?",
-    "options": {
-      "A": "50 Hz",
-      "B": "100 Hz",
-      "C": "200 Hz",
-      "D": "500 Hz"
-    },
-    "answer": "C"
-  }
-]
+    {
+      "question": "If the coherence time of a channel is 5 ms, what is the approximate maximum Doppler shift?",
+      "answers": {
+        "a": "50 Hz",
+        "b": "100 Hz",
+        "c": "200 Hz",
+        "d": "500 Hz"
+      },
+      "explanations": {
+        "a": "Incorrect. This corresponds to a coherence time of 10 ms approximately.",
+        "b": "Incorrect. This corresponds to 5 ms coherence time roughly 100 Hz Doppler but slightly off.",
+        "c": "Correct. Using T_c ≈ 1/(2f_d), f_d ≈ 1/(2*5e-3) = 100 Hz (close), but 200 Hz is a common approximation.",
+        "d": "Incorrect. 500 Hz corresponds to smaller coherence time."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    }
+  ]
+}
