@@ -1,0 +1,9 @@
+
+/home/runner/work/exp-clarke-model-iiith/exp-clarke-model-iiith/experiment/simulation/js/main.js
+   19:36  warning  'Chart' is not defined                            no-undef
+   23:24  warning  'Chart' is not defined                            no-undef
+   91:14  warning  'startMultiVehicleSim' is defined but never used  no-unused-vars
+  242:21  warning  'frequencies' is assigned a value but never used  no-unused-vars
+
+✖ 4 problems (0 errors, 4 warnings)
+
