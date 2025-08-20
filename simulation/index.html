@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Clarke's Wireless Fading Model - Virtual Lab</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Input Panel -->
+        <div class="panel input-panel">
+            <div class="title">Environment Setup</div>
+            <div class="input-group"><label for="frequency">Carrier Frequency (GHz)</label><input type="number" id="frequency" value="2.4" min="0.1" max="10" step="0.1"></div>
+            <div class="input-group"><label for="obstacleRate">Obstacle Density (obstacles/km²)</label><input type="number" id="obstacleRate" value="100" min="10" max="500" step="10"></div>
+            <div class="input-group"><label for="numPoints">Number of Path Points</label><input type="number" id="numPoints" value="10" min="5" max="20"></div>
+            <div class="input-group"><label for="threshold">Path Difference Threshold (m)</label><input type="number" id="threshold" value="500" min="10" max="500" step="10"></div>
+            <div class="input-group"><label for="simArea">Simulation Area (km)</label><input type="number" id="simArea" value="2" min="1" max="5" step="0.5"></div>
+            <button class="btn" onclick="generateSimulation()">Generate New Environment</button>
+            <hr style="margin: 20px 0;">
+            <div class="title comparison-section">Multi-Vehicle Simulation</div>
+            <div class="input-group"><label for="v1">Vehicle 1 (m/s)</label><input type="number" id="v1" value="30"></div>
+            <div class="input-group"><label for="v2">Vehicle 2 (m/s)</label><input type="number" id="v2" value="60"></div>
+            <div class="input-group"><label for="v3">Vehicle 3 (m/s)</label><input type="number" id="v3" value="90"></div>
+            <button class="btn btn-secondary" onclick="startMultiVehicleSim()">Start Simulation & Compare</button>
+            <button class="btn" onclick="stopAnimation()">Stop Simulation</button>
+            <div id="status"></div>
+            <div class="stats">
+                <div class="stat-item"><span class="stat-label">Total Obstacles:</span><span class="stat-value" id="totalObstacles">0</span></div>
+                <div class="stat-item"><span class="stat-label">Total Path Length:</span><span class="stat-value" id="pathLength">0 m</span></div>
+                <div class="stat-item"><span class="stat-label">Fastest Lap Time:</span><span class="stat-value" id="lapTime">0.0 s</span></div>
+            </div>
+        </div>
+        
+        <div class="panel simulation-panel">
+            <div class="title">Simulation Environment</div>
+            <div class="simulation-canvas"><svg class="canvas" id="simulationSVG"></svg></div>
+        </div>
+        
+        <div class="panel output-panel">
+            <div class="title">Analysis Results</div>
+            <div class="chart-container"><canvas id="autocorrelationChart"></canvas></div>
+            <div class="chart-container"><canvas id="psdChart"></canvas></div>
+        </div>
+    </div>
+ <script src="./js/main.js"></script>
+<script src="../assets/js/iframeResize.js"></script>
+        
+        </body>
+</html>
