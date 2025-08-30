@@ -1,49 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clarke's Wireless Fading Model - Virtual Lab</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <link rel="stylesheet" href="./css/main.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireless Channel Modeling Virtual Lab</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+       <link rel="stylesheet" href="./css/main.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Input Panel -->
-        <div class="panel input-panel">
-            <div class="title">Environment Setup</div>
-            <div class="input-group"><label for="frequency">Carrier Frequency (GHz)</label><input type="number" id="frequency" value="2.4" min="0.1" max="10" step="0.1"></div>
-            <div class="input-group"><label for="obstacleRate">Obstacle Density (obstacles/km²)</label><input type="number" id="obstacleRate" value="100" min="10" max="500" step="10"></div>
-            <div class="input-group"><label for="numPoints">Number of Path Points</label><input type="number" id="numPoints" value="10" min="5" max="20"></div>
-            <div class="input-group"><label for="threshold">Path Difference Threshold (m)</label><input type="number" id="threshold" value="500" min="10" max="500" step="10"></div>
-            <div class="input-group"><label for="simArea">Simulation Area (km)</label><input type="number" id="simArea" value="2" min="1" max="5" step="0.5"></div>
-            <button class="btn" onclick="generateSimulation()">Generate New Environment</button>
-            <hr style="margin: 20px 0;">
-            <div class="title comparison-section">Multi-Vehicle Simulation</div>
-            <div class="input-group"><label for="v1">Vehicle 1 (m/s)</label><input type="number" id="v1" value="30"></div>
-            <div class="input-group"><label for="v2">Vehicle 2 (m/s)</label><input type="number" id="v2" value="60"></div>
-            <div class="input-group"><label for="v3">Vehicle 3 (m/s)</label><input type="number" id="v3" value="90"></div>
-            <button class="btn btn-secondary" onclick="startMultiVehicleSim()">Start Simulation & Compare</button>
-            <button class="btn" onclick="stopAnimation()">Stop Simulation</button>
-            <div id="status"></div>
-            <div class="stats">
-                <div class="stat-item"><span class="stat-label">Total Obstacles:</span><span class="stat-value" id="totalObstacles">0</span></div>
-                <div class="stat-item"><span class="stat-label">Total Path Length:</span><span class="stat-value" id="pathLength">0 m</span></div>
-                <div class="stat-item"><span class="stat-label">Fastest Lap Time:</span><span class="stat-value" id="lapTime">0.0 s</span></div>
+    <div class="header">
+        <h1>Wireless Channel Modeling Virtual Lab</h1>
+        <p>Interactive simulation of mobile radio channel fading characteristics</p>
+    </div>
+    <style>
+        .header {
+            padding: 5px 0;
+            margin-bottom: 5px;
+        }
+        .tabs {
+            margin-top: 0;
+            padding-top: 0;
+        }
+        @media (max-width: 500px) {
+            .header {
+                padding: 5px;
+                text-align: center;
+            }
+        }
+    </style>
+    <div class="tabs">
+        <button class="tab-button active" onclick="switchTab('clarkes', event)">Clarke's Model</button>
+        <button class="tab-button" onclick="switchTab('realistic', event)">Realistic Model</button>
+    </div>
+    <div class="container">
+      
+  
+        <div id="clarkes" class="tab-content active">
+    <div class="lab-layout">
+        <!-- Left: Controls Panel (unchanged) -->
+        <div class="controls-panel">
+            <h2>Parameters - Clarke's Model</h2>
+            
+            <div class="input-group-container">
+                <div class="control-group">
+                    <label for="velocity1">Vehicle 1 Velocity (m/s)</label>
+                    <input type="number" id="velocity1" value="30" min="0" max="100" step="1">
+                    <div class="help-text">Controls Doppler spread and fading rate.</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="velocity2">Vehicle 2 Velocity (m/s)</label>
+                    <input type="number" id="velocity2" value="60" min="0" max="100" step="1">
+                    <div class="help-text">Controls Doppler spread and fading rate.</div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="velocity3">Vehicle 3 Velocity (m/s)</label>
+                    <input type="number" id="velocity3" value="90" min="0" max="100" step="1">
+                    <div class="help-text">Controls Doppler spread and fading rate.</div>
+                </div>
+            </div>
+            <div class="input-group-container">
+                <div class="control-group">
+                    <label for="frequency">Carrier Frequency (MHz)</label>
+                    <input type="number" id="frequency" value="900" min="100" max="6000" step="100">
+                    <div class="help-text">Affects wavelength and Doppler frequency.</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="scatterers">Number of Scatterers</label>
+                    <input type="number" id="scatterers" value="20" min="6" max="50" step="2">
+                    <div class="help-text">More scatterers provide a better approximation of the model.</div>
+                </div>
+            </div>
+            
+            <button class="simulate-button" onclick="simulateIdeal()">Simulate Clarke's Model</button>
+
+            <!-- <div class="info-box">
+                <h4>Clarke's Model</h4>
+                <p>This model is based on statistical properties rather than direct simulation. It assumes isotropic scattering, meaning signals arrive from all directions with equal probability, leading to a theoretical Bessel function for autocorrelation and a classic "bathtub" shape for the Doppler power spectrum.</p>
+                <ul style="margin: 10px 0 0 20px; line-height: 1.6;">
+                    <li>Scatterers are uniformly distributed around the receiver.</li>
+                    <li>Each signal path has equal average power.</li>
+                </ul>
+            </div> -->
+        </div>
+
+        <!-- Center: Environment Panel (unchanged) -->
+        <div class="environment-panel">
+            <h2>Scattering Environment</h2>
+            <canvas id="environmentCanvas" class="environment-canvas"></canvas>
+        </div>
+        
+        <!-- Right: Output Panel with stacked charts -->
+        <div class="output-panel">
+            <div class="chart-panel">
+                <h3>Autocorrelation Function R(τ)</h3>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="v1-autocorr-check" checked> Vehicle 1</label>
+                    <label><input type="checkbox" id="v2-autocorr-check" checked> Vehicle 2</label>
+                    <label><input type="checkbox" id="v3-autocorr-check" checked> Vehicle 3</label>
+                </div>
+                <div class="chart-container">
+                    <canvas id="autocorrelationChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-panel">
+                <h3>Power Spectral Density S(f)</h3>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="v1-psd-check" checked> Vehicle 1</label>
+                    <label><input type="checkbox" id="v2-psd-check" checked> Vehicle 2</label>
+                    <label><input type="checkbox" id="v3-psd-check" checked> Vehicle 3</label>
+                </div>
+                <div class="chart-container">
+                    <canvas id="psdChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="realistic" class="tab-content">
+    <div class="lab-layout">
+        <!-- Left: Controls Panel (unchanged) -->
+        <div class="controls-panel">
+            <h2>Parameters - Realistic Model</h2>
+            
+            <div class="input-group-container">
+                <div class="control-group">
+                    <label for="velocity-realistic">Vehicle Velocity (m/s)</label>
+                    <input type="number" id="velocity-realistic" value="30" min="0" max="100" step="1">
+                    <div class="help-text">Controls Doppler spread and fading rate.</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="signal-frequency">Signal Frequency (Hz)</label>
+                    <input type="number" id="signal-frequency" value="1000" min="100" max="10000" step="100">
+                    <div class="help-text">Frequency of the transmitted sine signal.</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="frequency-realistic">Carrier Frequency (MHz)</label>
+                    <input type="number" id="frequency-realistic" value="900" min="100" max="6000" step="100">
+                    <div class="help-text">Affects wavelength and Doppler frequency.</div>
+                </div>
+            </div>
+            
+            <div class="input-group-container">
+                <div class="control-group">
+                    <label for="multipaths">Number of Multipaths (N)</label>
+                    <input type="number" id="multipaths" value="20" min="6" max="50" step="2">
+                    <div class="help-text">Number of multipath components in sum of sinusoids.</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="samples">Number of Samples (M)</label>
+                    <input type="number" id="samples" value="1024" min="128" max="4096" step="128">
+                    <div class="help-text">Number of time samples for simulation.</div>
+                </div>
+            </div>
+            
+            <button class="simulate-button" onclick="simulateRealistic()">Simulate Realistic Model</button>
+
+            <!-- <div class="info-box">
+                <h4>Realistic Model Implementation</h4>
+                <p>This model simulates a practical Rayleigh fading channel using **Jakes' sum of sinusoids** method with the following steps:</p>
+                <ul style="margin: 10px 0 0 20px; line-height: 1.6;">
+                    <li><strong>Channel Generation:</strong> Complex baseband channel h(t) = h<sub>I</sub>(t) + jh<sub>Q</sub>(t) using Jakes' model with N multipath components and random arrival angles.</li>
+                    <li><strong>Signal Processing:</strong> A sine wave s(t) is transmitted and the received signal r(t) = h(t) × s(t) is computed.</li>
+                    <li><strong>Envelope Calculation:</strong> The signal envelope |r(t)| = √(r<sub>I</sub>²(t) + r<sub>Q</sub>²(t)) shows Rayleigh fading effects.</li>
+                    <li><strong>Statistical Analysis:</strong> Autocorrelation R(τ) and power spectral density S(f) are computed from the simulated channel and compared with Clarke's theoretical model.</li>
+                </ul>
+            </div> -->
+        </div>
+
+        <!-- Center: Both Environment and Received Signal -->
+        <div class="realistic-center-panels">
+            <div class="environment-panel">
+                <h2>Multipath Environment</h2>
+                <canvas id="realisticEnvironmentCanvas" class="environment-canvas"></canvas>
+            </div>
+            
+            <div class="environment-panel">
+                <h2>Received Signal Envelope |r(t)|</h2>
+                <div class="chart-container" style="height: 400px;">
+                    <canvas id="receivedSignalChart"></canvas>
+                </div>
             </div>
         </div>
         
-        <div class="panel simulation-panel">
-            <div class="title">Simulation Environment</div>
-            <div class="simulation-canvas"><svg class="canvas" id="simulationSVG"></svg></div>
-        </div>
-        
-        <div class="panel output-panel">
-            <div class="title">Analysis Results</div>
-            <div class="chart-container"><canvas id="autocorrelationChart"></canvas></div>
-            <div class="chart-container"><canvas id="psdChart"></canvas></div>
+        <!-- Right: Output Panel with stacked charts -->
+        <div class="output-panel">
+            <div class="chart-panel">
+                <h3>Autocorrelation Function R(τ) - Simulated vs. Ideal</h3>
+                <div class="chart-container">
+                    <canvas id="realisticAutocorrelationChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-panel">
+                <h3>Power Spectral Density S(f) - Simulated vs. Ideal</h3>
+                <div class="chart-container">
+                    <canvas id="realisticPsdChart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
- <script src="./js/main.js"></script>
+</div>
+    </div>
+<script src="./js/main.js"></script>
 </body>
 </html>
