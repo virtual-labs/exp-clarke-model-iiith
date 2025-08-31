@@ -59,7 +59,7 @@
     }
 
     .tab-button.active {
-        background: #667eea;
+        background: green;
         color: white;
     }
 
@@ -237,169 +237,6 @@
         gap: 20px;
     }
 
-    /* Collapsible Instructions Panel */
-    .instructions-container {
-        margin-bottom: 25px;
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        overflow: hidden;
-        border-left: 4px solid #667eea;
-    }
-
-    .instructions-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 20px;
-        cursor: pointer;
-        background: #fff;
-        transition: background-color 0.3s ease;
-    }
-
-    .instructions-header:hover {
-        background-color: #f8f9fa;
-    }
-
-    .instructions-header h2 {
-        margin: 0;
-        font-size: 1.4rem;
-        color: #2d3748;
-    }
-
-    .instructions-toggle {
-        background: none;
-        border: none;
-        color: #667eea;
-        font-size: 1.2rem;
-        cursor: pointer;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.3s ease;
-    }
-
-    .instructions-toggle:hover {
-        background-color: #f0f4ff;
-    }
-
-    .instructions-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.4s ease;
-        padding: 0 20px;
-    }
-
-    .instructions-content.expanded {
-        max-height: 800px;
-        padding-bottom: 20px;
-    }
-
-    .instructions-panel {
-        border: none;
-        box-shadow: none;
-        margin-bottom: 0;
-        padding: 0;
-        background: transparent;
-    }
-
-    .instructions-panel ol {
-        padding-left: 20px;
-    }
-
-    .instructions-panel li {
-        margin-bottom: 8px;
-        line-height: 1.5;
-    }
-
-    /* Instructions Slider Styles */
-    .instructions-slider-container {
-        max-width: 1400px;
-        margin: 0 auto 15px auto;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        overflow: hidden;
-        border-left: 4px solid #667eea;
-    }
-
-    .instructions-slider-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 20px;
-        background-color: #f8f9fa;
-        cursor: pointer;
-        border-bottom: 1px solid #e9ecef;
-    }
-
-    .instructions-slider-header h2 {
-        margin: 0;
-        font-size: 1.2rem;
-        color: #333;
-    }
-
-    .toggle-instructions {
-        background: none;
-        border: none;
-        color: #667eea;
-        font-size: 16px;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-
-    .toggle-instructions:hover {
-        background-color: rgba(102, 126, 234, 0.1);
-    }
-
-    .instructions-slider-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.4s ease;
-    }
-
-    .instructions-slides {
-        position: relative;
-        padding: 20px;
-    }
-
-    .instruction-slide {
-        display: none;
-    }
-
-    .instruction-slide.active {
-        display: block;
-    }
-
-    .instruction-slide h3 {
-        color: #667eea;
-        margin-bottom: 15px;
-    }
-
-    .instruction-slide ol {
-        padding-left: 25px;
-    }
-
-    .instruction-slide li {
-        margin-bottom: 8px;
-        line-height: 1.5;
-    }
-
-    .instructions-slider-nav {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0 20px 20px;
-    }
 
     .slider-nav-btn {
         background: #667eea;
@@ -446,14 +283,13 @@
         background: white;
         border-radius: 0 0 10px 10px; /* Rounded corners only at bottom */
         box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        overflow: hidden;
-        border-top: none; /* Remove top border */
-        border-left: 4px solid #667eea;
+        border-color:2px solid black;
+     
     }
 
     .v-instruction-container {
-        border-left: 4px solid #667eea;
-        margin-top: 0; /* Remove top margin */
+        border: 1.5px solid black;
+        margin-top: 2px; /* Remove top margin */
     }
 
     .v-collapsible {
@@ -461,7 +297,7 @@
         font-weight: 600;
         padding: 15px 20px;
         background: #f8f9fa;
-        color: #333;
+        color: black;
         cursor: pointer;
         position: relative;
         transition: all 0.3s ease;
@@ -579,7 +415,7 @@
             flex-direction: column;
         }
         .tabs {
-            flex-direction: column;
+            flex-direction: row;
         }
     }
 
@@ -740,31 +576,4 @@
         }
     }
 
-    @media (max-width: 320px) {
-        .tab-button {
-            padding: 8px 15px;
-            font-size: 12px;
-        }
-        
-        .simulate-button {
-            padding: 10px;
-            font-size: 14px;
-        }
-        
-        .control-group input {
-            padding: 6px;
-        }
-        
-        .environment-canvas {
-            height: 200px;
-        }
-
-        .instructions-slider-header h2 {
-            font-size: 0.9rem;
-        }
-        
-        .instruction-slide li {
-            font-size: 12px;
-            line-height: 1.4;
-        }
-    }
+ 

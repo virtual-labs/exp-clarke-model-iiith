@@ -8,62 +8,63 @@
        <link rel="stylesheet" href="./css/main.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Wireless Channel Modeling Virtual Lab</h1>
-        <p>Interactive simulation of mobile radio channel fading characteristics</p>
-    </div>
-    <style>
-        .header{
-            padding: 5px 0;
-            margin-bottom: 5px;
-        }
-        .tabs {
-            margin-top: 0;
-            padding-top: 0;
-            margin-bottom: 0; /* Remove margin from tabs */
-        }
-        @media (max-width: 500px) {
-            .header {
-                padding: 5px;
-                text-align: center;
-            }
-        }
-    </style>
-    
-    <div class="tabs">
-        <button class="tab-button active" onclick="switchTab('clarkes', event)">Clarke's Model</button>
-        <button class="tab-button" onclick="switchTab('realistic', event)">Realistic Model</button>
-    </div>
-    
-    <!-- Instructions moved outside container and attached directly to tabs -->
-    <div class="v-collapsible-instruction-container v-instruction-container">
-        <div class="v-collapsible is-size-5">Instructions</div>
-        <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%;">
-            <h3 class="instruction-tab-title">Clarke's Model</h3>
-            <ol class="instruction-list">
-                <li><strong>Model Overview:</strong> Clarke's model simulates mobile radio channel fading based on the principle of isotropic scattering around a mobile receiver.</li>
-                <li><strong>Set Vehicle Parameters:</strong> Adjust the velocities for each vehicle (30-90 m/s) to observe how speed affects fading characteristics.</li>
-                <li><strong>Configure Environment:</strong> Set the carrier frequency (900 MHz is common for mobile communications) and number of scatterers.</li>
-                <li><strong>Run Simulation:</strong> Click "Simulate Clarke's Model" to generate the scattering environment visualization.</li>
-                <li><strong>Analyze Results:</strong> Observe how the autocorrelation function and power spectral density are affected by vehicle velocity.</li>
-                <li><strong>Compare Vehicles:</strong> Use checkboxes to toggle visibility of different vehicle data for direct comparison.</li>
-                <li><strong>Key Learning:</strong> Notice how faster vehicles experience more rapid fading (shorter coherence time) and wider Doppler spread.</li>
-            </ol>
-            
-            <h3 class="instruction-tab-title">Realistic Model</h3>
-            <ol class="instruction-list">
-                <li><strong>Model Overview:</strong> This model implements practical Rayleigh fading using Jakes' sum of sinusoids method.</li>
-                <li><strong>Set Parameters:</strong> Configure vehicle velocity, signal frequency, and carrier frequency values.</li>
-                <li><strong>Adjust Complexity:</strong> Set the number of multipaths (N) and samples (M) to control simulation accuracy.</li>
-                <li><strong>Run Simulation:</strong> Click "Simulate Realistic Model" to generate the fading channel.</li>
-                <li><strong>Analyze Signal:</strong> Observe the received signal envelope to see the characteristic Rayleigh fading pattern.</li>
-                <li><strong>Compare Models:</strong> The bottom charts compare the simulated channel with Clarke's theoretical model.</li>
-                <li><strong>Key Learning:</strong> Observe how the simulated autocorrelation and power spectral density approach the theoretical curves as the number of multipaths increases.</li>
-            </ol>
-        </div>
-    </div>
+ 
     
     <div class="container">
+        <div class="header">
+            <h1>Wireless Channel Modeling Virtual Lab</h1>
+            <p>Interactive simulation of mobile radio channel fading characteristics</p>
+        </div>
+        <style>
+            .header{
+                padding: 5px 0;
+                margin-bottom: 5px;
+            }
+            .tabs {
+                margin-top: 0;
+                padding-top: 0;
+                margin-bottom: 0; /* Remove margin from tabs */
+            }
+            @media (max-width: 500px) {
+                .header {
+                    padding: 5px;
+                    text-align: center;
+                }
+            }
+        </style>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('clarkes', event)">Clarke's Model</button>
+            <button class="tab-button" onclick="switchTab('realistic', event)">Realistic Model</button>
+        </div>
+        
+        <!-- Instructions moved outside container and attached directly to tabs -->
+        <div class="v-collapsible-instruction-container v-instruction-container">
+            <div class="v-collapsible is-size-5">Instructions</div>
+            <div class="v-content">
+                <h3 class="instruction-tab-title">Clarke's Model</h3>
+                <ol class="instruction-list">
+                    <li><strong>Model Overview:</strong> Clarke's model simulates mobile radio channel fading based on the principle of isotropic scattering around a mobile receiver.</li>
+                    <li><strong>Set Vehicle Parameters:</strong> Adjust the velocities for each vehicle (30-90 m/s) to observe how speed affects fading characteristics.</li>
+                    <li><strong>Configure Environment:</strong> Set the carrier frequency (900 MHz is common for mobile communications) and number of scatterers.</li>
+                    <li><strong>Run Simulation:</strong> Click "Simulate Clarke's Model" to generate the scattering environment visualization.</li>
+                    <li><strong>Analyze Results:</strong> Observe how the autocorrelation function and power spectral density are affected by vehicle velocity.</li>
+                    <li><strong>Compare Vehicles:</strong> Use checkboxes to toggle visibility of different vehicle data for direct comparison.</li>
+                    <li><strong>Key Learning:</strong> Notice how faster vehicles experience more rapid fading (shorter coherence time) and wider Doppler spread.</li>
+                </ol>
+                
+                <h3 class="instruction-tab-title">Realistic Model</h3>
+                <ol class="instruction-list">
+                    <li><strong>Model Overview:</strong> This model implements practical Rayleigh fading using Jakes' sum of sinusoids method.</li>
+                    <li><strong>Set Parameters:</strong> Configure vehicle velocity, signal frequency, and carrier frequency values.</li>
+                    <li><strong>Adjust Complexity:</strong> Set the number of multipaths (N) and samples (M) to control simulation accuracy.</li>
+                    <li><strong>Run Simulation:</strong> Click "Simulate Realistic Model" to generate the fading channel.</li>
+                    <li><strong>Analyze Signal:</strong> Observe the received signal envelope to see the characteristic Rayleigh fading pattern.</li>
+                    <li><strong>Compare Models:</strong> The bottom charts compare the simulated channel with Clarke's theoretical model.</li>
+                    <li><strong>Key Learning:</strong> Observe how the simulated autocorrelation and power spectral density approach the theoretical curves as the number of multipaths increases.</li>
+                </ol>
+            </div>
+        </div>
         <div id="clarkes" class="tab-content active">
     <div class="lab-layout">
         <!-- Left: Controls Panel (unchanged) -->
