@@ -312,6 +312,250 @@
         line-height: 1.5;
     }
 
+    /* Instructions Slider Styles */
+    .instructions-slider-container {
+        max-width: 1400px;
+        margin: 0 auto 15px auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border-left: 4px solid #667eea;
+    }
+
+    .instructions-slider-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .instructions-slider-header h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #333;
+    }
+
+    .toggle-instructions {
+        background: none;
+        border: none;
+        color: #667eea;
+        font-size: 16px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .toggle-instructions:hover {
+        background-color: rgba(102, 126, 234, 0.1);
+    }
+
+    .instructions-slider-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease;
+    }
+
+    .instructions-slides {
+        position: relative;
+        padding: 20px;
+    }
+
+    .instruction-slide {
+        display: none;
+    }
+
+    .instruction-slide.active {
+        display: block;
+    }
+
+    .instruction-slide h3 {
+        color: #667eea;
+        margin-bottom: 15px;
+    }
+
+    .instruction-slide ol {
+        padding-left: 25px;
+    }
+
+    .instruction-slide li {
+        margin-bottom: 8px;
+        line-height: 1.5;
+    }
+
+    .instructions-slider-nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 20px 20px;
+    }
+
+    .slider-nav-btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .slider-nav-btn:hover {
+        background: #5a6ac2;
+    }
+
+    .slider-indicator {
+        display: flex;
+        justify-content: center;
+        margin: 0 15px;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        margin: 0 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .dot.active {
+        background: #667eea;
+    }
+
+  
+    .v-collapsible-instruction-container {
+        max-width: 1400px;
+        margin: 0 auto 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .v-instruction-container {
+        border-left: 4px solid #667eea;
+    }
+
+    .v-collapsible {
+        font-size: 1.2rem;
+        font-weight: 600;
+        padding: 15px 20px;
+        background: #f8f9fa;
+        color: #333;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .v-collapsible::after {
+        content: "▼";
+        position: absolute;
+        right: 20px;
+        color: #667eea;
+        font-size: 0.8em;
+        transition: all 0.3s ease;
+    }
+
+    .v-collapsible.active::after {
+        content: "▲";
+    }
+
+    .v-collapsible:hover {
+        background: #e9ecef;
+    }
+
+    .v-content {
+        padding: 20px;
+        background: white;
+        color: #333;
+    }
+
+    .instruction-tab-title {
+        color: #667eea;
+        margin: 15px 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .instruction-tab-title:first-of-type {
+        margin-top: 0;
+    }
+
+    .instruction-list {
+        margin-bottom: 20px;
+    }
+
+    .instruction-list li {
+        margin-bottom: 10px;
+        line-height: 1.6;
+    }
+
+    .instruction-list li strong {
+        color: #4a5568;
+    }
+
+    /* Responsive styles for instructions */
+    @media (max-width: 600px) {
+        .v-collapsible {
+            font-size: 1rem;
+            padding: 12px 15px;
+        }
+        
+        .v-content {
+            padding: 15px 5%;
+        }
+        
+        .v-content {
+            text-align: left;
+            padding-left: 5% !important;
+            padding-right: 5% !important;
+        }
+        
+        .instruction-tab-title {
+            font-size: 1rem;
+        }
+        
+        .instruction-list li {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .v-collapsible {
+            font-size: 0.9rem;
+            padding: 10px 12px;
+        }
+        
+        .v-content {
+            padding: 12px 2%;
+        }
+        
+        .v-content {
+            padding-left: 2% !important;
+            padding-right: 2% !important;
+        }
+        
+        .instruction-list li {
+            font-size: 0.85rem;
+            margin-bottom: 7px;
+        }
+    }
+
     @media (max-width: 1000px) {
         .lab-layout {
             grid-template-columns: 1fr;
@@ -376,6 +620,37 @@
             gap: 10px;
             margin-bottom: 15px;
         }
+
+        .instructions-slider-container {
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .instructions-slider-header {
+            padding: 10px 15px;
+        }
+        
+        .instructions-slider-header h2 {
+            font-size: 1.1rem;
+        }
+        
+        .instructions-slides {
+            padding: 15px;
+        }
+        
+        .instruction-slide h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .instruction-slide ol {
+            padding-left: 20px;
+        }
+        
+        .instruction-slide li {
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
     }
 
     @media (max-width: 400px) {
@@ -416,6 +691,38 @@
         .input-group-container .control-group {
             min-width: 100%;
         }
+
+        .instructions-slider-header {
+            padding: 8px 12px;
+        }
+        
+        .instructions-slider-header h2 {
+            font-size: 1rem;
+        }
+        
+        .instructions-slides {
+            padding: 12px;
+        }
+        
+        .instruction-slide ol {
+            padding-left: 16px;
+        }
+        
+        .instruction-slide li {
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .slider-nav-btn {
+            width: 25px;
+            height: 25px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            margin: 0 4px;
+        }
     }
 
     @media (max-width: 320px) {
@@ -435,5 +742,14 @@
         
         .environment-canvas {
             height: 200px;
+        }
+
+        .instructions-slider-header h2 {
+            font-size: 0.9rem;
+        }
+        
+        .instruction-slide li {
+            font-size: 12px;
+            line-height: 1.4;
         }
     }
