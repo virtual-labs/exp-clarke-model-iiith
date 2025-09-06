@@ -10,40 +10,12 @@ where $N$ is the number of resolvable multipath components, $\alpha_n(t)$ and $\
 
 Deriving the statistical properties of such a channel directly is intractable. Thus, Clarke's model introduces some simplistic assumptions to derive it. Assuming that $\alpha_n(t)$, $\tau_n(t)$ and $f_{D_n}(t)$ are changing slowly enough such that they are constant over the time intervals of interest, we have $\alpha_n(t) \approx \alpha_n$, $\tau_n(t) \approx \tau_n$ and $f_{D_n}(t) \approx f_{D_n}$. With this assumption the Doppler phase shift becomes $\Phi_{D_n}(t) = 2\pi f_{D_n}t$. The overall phase of the $n$-th multipath component is $\phi_n(t) = 2\pi f_c \tau_n - 2\pi f_{D_n}t$. We now make a key assumption: we assume that for the $n$-th multipath component the term $2\pi f_c τ_n$ in $\Phi_n(t)$ changes rapidly relative to all other phase terms. This is a reasonable assumption since $f_c$ is large and hence the term $2\pi f_c τ_n$ can go through a 360 degree rotation for a small change in multipath delay $τ_n$. Under this assumption $\Phi_n(t)$ is uniformly distributed on $[-\pi, \pi]$. Thus, we assume $N$ multipath components with angle of arrival $\Phi_n = n \Delta \Phi$, where $\Delta \phi = \frac{2\pi}{N}$.
 
-
-
-
-
-
-
-
-
-## System model
-
-We have a mobile receiver moving at speed \(v\). The transmitted signal is scattered by stationary objects around the receiver. Let \(K\) be the number of multi-path components (MPCs). Then, aligned with our assumption in section [Assumptions](#assumptions), the \(i\)th MPC arrives at an angle of
-
-$$
-\begin{aligned}
-      \theta_i \triangleq \frac{2\pi i}{K}, \quad i = 0, 1, \dots, K-1
-\end{aligned}
-$$
-
-with respect to the direction of motion. \(K\) is usually assumed to be a large number.
-
 <p align="center">
 <img src="./images/expt4_model.jpeg">
 </p>  
 *System model with arriving signals uniformly distributed in angle around the receiver; receiver motion not shown, but will be there leading to Doppler effects*
 
-The MPC arriving at angle \(\theta\) has a delay of \(\tau_\theta(t)\) and a time-invariant gain \(a_\theta\). Thus, the input-output relationship is given by:
 
-$$
-\begin{aligned}
-      y(t) = \sum_{i=0}^{K-1} a_{\theta_i} x(t - \tau_{\theta_i}(t))
-\end{aligned}
-$$
-
-**Note:** In a more general version of the model, the received power distribution $p(\theta)$ and gain $a(\theta)$ can be taken as arbitrary functions of $\theta$, but in this experiment we shall stick to the uniform power distribution and isotropic antenna gain model.
 
 Since we assume flat-fading, i.e., the communication signal bandwidth $W$ is much smaller than the reciprocal of the delay spread, the complex baseband signal can be represented by a single tap at each time:
 
