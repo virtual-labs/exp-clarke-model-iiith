@@ -1,73 +1,29 @@
-### A. One-Ring Diagram Exploration
+In this experiment, you will experimentally verify Clarke's fading model. You will do this by comparing the `autocorrelation function` and the `power spectral density` generated analytically by the model and the ones generated experimentally by simulating a realistic scenario.
 
-1. **Static View:**  
-   - Identify Tx (center red), Scatterers (red on ring), Rx (blue).  
+### Clarke's Model
+In this tab named `Clarke's model` you will have the following parameters that you can vary.
 
-2. **Change Number of Paths (K):**  
-   - Use the slider to vary K (e.g., min, mid, max).  
-   - Observe scatterer count updates immediately without needing to click "Update Simulation".
+- `Velocities of 3 vehicles` These parameters can take values from $0$ to $100 m/s$. Vehicle here refers to the receiver, which has a ring of scatterers surrounding it (direction of the velocity does not matter since it is a radially symmetric setting).
+- `Carrier frequency`
+- `No. of scatterers` We have seen in the theory section that more scatterers implies a more accurate modelling of the fading channel
 
-3. **Animate Rx Movement:**  
-   - Set *Mobile Velocity* (e.g., 10–20 m/s), click **Start Animation**.  
-   - Watch the Rx (blue circle) move along the ring with an orange velocity vector.  
-   - Change velocity during animation to see the speed effect.  
-   - Click **Stop Animation** to end.  
-   - Note: Animation is visual only; it doesn't affect charts unless "Update Simulation" is clicked.
+In the center, you can see the setting of Clarke's model, with the receiver $R_X$ in the center (red), surrounded by scatterers (green) situated on a circle.
 
----
+On the right of the screen you can the autocorrelation and power spectral density plots for the different cases corresponding to the three different vehicle velocities (each plot has 3 colour-coded curves).
 
-### B. Autocorrelation Function (R₀[n])
+### Realistic Model
+In this tab, you will make the comparison between the results generated using the Clarke's model against the one using computer simualations.
 
-> After each change, click **Update Simulation** to refresh the plot.
+In the input tab on the left, you can enter,
 
-1. **Amplitude (a):**  
-   - Higher `a` increases the peak at `n=0`.  
-   - The overall shape and width of the main lobe remain mostly the same.
+- `Vehicle velocity` The velocity at which the reciever is moving
+- `Signal Frequency` This is the frequency (in Hz) of the sinusoid we are transmitting as the message
+- `Carrier Frequency` This is the frequency (in MHz) of the carrier used for communcation
+- `No. of multipaths` How many multipath components are considered in the simulation. This is same as the no. of scatterers considered (considering more paths will give more accurate results)
+- `No. of samples` This is another simulation parameter (a larger value will give more accurate results)
 
-2. **Doppler Spread (Dᵥ):**  
-   - Increasing Dᵥ narrows the main lobe → faster decorrelation (shorter coherence time).  
+In the image in the center you are given the setting with the receiver surrounded by multiple scatterers at different distances within a range. The received signal envelope is also given for reference.
 
-3. **Bandwidth (W):**  
-   - Increasing W → slower decay of R₀[n] (wider main lobe).  
-   - Related to J₀ argument: `nπDᵥ/W`.
+In the output section, the autocorrelation and power spectral density plots are given for both the theoretical and experimental cases.
 
-4. **Number of Samples:**  
-   - Affects x-axis range (length of the plot), not the core shape of R₀[n].
-
----
-
-### C. Doppler Power Spectrum (S(f))
-
-> After each change, click **Update Simulation** to refresh the plot.
-
-1. **Default Shape:**  
-   - Observe the characteristic “U-shape” or “bathtub” spectrum with edge peaks.
-
-2. **Amplitude (a):**  
-   - Changes the y-axis scale (overall power).  
-   - Spectrum shape and frequency extent remain unchanged.
-
-3. **Doppler Spread (Dᵥ):**  
-   - Wider Dᵥ → broader frequency range.  
-   - Non-zero values for `|f| ≤ Dᵥ/(2W)`.
-
-4. **Bandwidth (W):**  
-   - Increasing W → narrower spectrum range.  
-   - Inversely proportional to frequency spread (`Dᵥ/2W`).
-
-5. **Number of Samples:**  
-   - Higher sample count → smoother, more detailed plot.
-
----
-
-### D. Additional Parameters
-
-1. **Coherence Time Factor:**  
-   - Vary it and observe if there's any effect.  
-   - It may not directly affect R₀[n] or S(f) in this version.
-
-2. **Number of Paths (K):**  
-   - Affects only the One-Ring Diagram.  
-   - Higher K better approximates the ideal infinite-scatterer assumption in Clarke’s model.
-
----
+You can vary all the different parameters and check which values give better agreement between the theoretical and simulated results. For example, on increasing the no. of multipaths/scatterers will bring the curves closer because when we have more scatterers in the real-world setting, it is closer to the setting assumed by Clarke's model.
