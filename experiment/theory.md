@@ -70,8 +70,8 @@ This widening of the PSD indicates stronger time selectivity of the channel, whi
 The figure below illustrates these effects.
 
 
-| <img src="./images/acf.png" width="600">  | <img src="./images/psd.png" width="600"> |
-|:-----------------------------:|:-----------------------------:|
+| <img src="./images/acf.png" width="730">  | <img src="./images/psd.png" width="730"> |
+|:-----------------------------------------:|:----------------------------------------:|
 
 Finally, we can define the coherence time as the time it takes for the auto-correlation function to go below a certain threshold $\alpha$ for the first time. This yeilds the following expression fro coherence time
 
