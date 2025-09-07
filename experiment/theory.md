@@ -1,4 +1,4 @@
-Imagine the scenario where a moving transmitter is transmitting pulses. Here, we will observe changes in the amplitudes, delays, and the number of multipath components. The corresponding received signal is the sum of the line-of-sight (LOS) path and all resolvable multipath components and is given by
+Imagine the scenario where a moving transmitter is transmitting pulses. . At the receiver, the observed signal undergoes variations in amplitude, delay, and the number of multipath components due to mobility and scattering.  The corresponding received signal can be modeled as the superposition of the line-of-sight (LOS) path and all resolvable multipath components as
 
 $$
 \begin{equation}
@@ -6,14 +6,38 @@ $$
 \end{equation}
 $$
 
-where $N$ is the number of resolvable multipath components, $\alpha_n(t)$ and $\tau_n(t)$ are the amplitudes and delays respectively corresponding to the $n$-th path and $\Phi_{D_n}(t) = \int 2\pi f_{D_n}(t)dt$ is the doppler phase shift and $f_{D_n}(t)$ is the doppler frequency. Since the parameters $\alpha_n(t)$, $\tau_n(t)$ and $\Phi_{D_n}(t)$ associated with each resolvable multipath component change over time, they are characterized as random processes which we assume to be both stationary and ergodic. Thus, the received signal is also a stationary and ergodic random process.
+where $N$ is the number of resolvable multipath components, $\alpha_n(t)$ and $\tau_n(t)$ are the amplitudes and delays respectively corresponding to the $n$-th path and $\Phi_{D_n}(t) = \int 2\pi f_{D_n}(t)dt$ is the doppler phase shift and $f_{D_n}(t)$ is the doppler frequency. Since the parameters $\alpha_n(t)$, $\tau_n(t)$ and $\Phi_{D_n}(t)$ associated with each resolvable multipath component change over time, they are characterized as random processes which we assume to be both stationary and ergodic. Consequently, the received signal is also a stationary and ergodic random process.
 
-Deriving the statistical properties of such a channel directly is intractable. Thus, Clarke's model introduces some simplistic assumptions to derive it. Assuming that $\alpha_n(t)$, $\tau_n(t)$ and $f_{D_n}(t)$ are changing slowly enough such that they are constant over the time intervals of interest, we have $\alpha_n(t) \approx \alpha_n$, $\tau_n(t) \approx \tau_n$ and $f_{D_n}(t) \approx f_{D_n}$. With this assumption the Doppler phase shift becomes $\Phi_{D_n}(t) = 2\pi f_{D_n}t$. The overall phase of the $n$-th multipath component is $\phi_n(t) = 2\pi f_c \tau_n - 2\pi f_{D_n}t$. We now make a key assumption: we assume that for the $n$-th multipath component the term $2\pi f_c τ_n$ in $\Phi_n(t)$ changes rapidly relative to all other phase terms. This is a reasonable assumption since $f_c$ is large and hence the term $2\pi f_c τ_n$ can go through a 360 degree rotation for a small change in multipath delay $τ_n$. Under this assumption $\Phi_n(t)$ is uniformly distributed on $[-\pi, \pi]$. Thus, we assume $N$ multipath components with angle of arrival $\Phi_n = n \Delta \Phi$, where $\Delta \phi = \frac{2\pi}{N}$ as depicted in the figure below.
+Deriving the statistical properties of such a channel directly is generally intractable. Thus, Clarke's model introduces some simplistic assumptions to derive it.
+- **Quasi-stationarity**: Assuming that $\alpha_n(t)$, $\tau_n(t)$ and $f_{D_n}(t)$ are changing slowly enough such that they are constant over the time intervals of interest, we have $\alpha_n(t) \approx \alpha_n$, $\tau_n(t) \approx \tau_n$ and $f_{D_n}(t) \approx f_{D_n}$. With this assumption the Doppler phase shift becomes $\Phi_{D_n}(t) = 2\pi f_{D_n}t$. Hence, the overall phase of the $n$-th multipath component is
+
+$$\phi_n(t) = 2\pi f_c \tau_n - 2\pi f_{D_n}t.$$
+
+- **Rapid carrier induced phase deviation**: We assume that for the $n$-th multipath component the term $2\pi f_c τ_n$ in $\Phi_n(t)$ changes rapidly relative to all other phase terms. This is a reasonable assumption since $f_c$ is large and hence the term $2\pi f_c τ_n$ can go through a 360 degree rotation for a small change in multipath delay $τ_n$. Under this assumption $\Phi_n(t)$ is uniformly distributed on $[-\pi, \pi]$. Thus, we assume $N$ multipath components with angle of arrival $\Phi_n = n \Delta \Phi$, where $\Delta \phi = \frac{2\pi}{N}$ as depicted in the figure below.
 
 <p align="center">
 <img src="./images/exp4_model.jpg", width='40%'>
 </p>  
 *System model with arriving signals uniformly distributed in angle around the receiver; receiver motion not shown, but will be there leading to Doppler effects*
+
+Now we move ahead to derive the various statistical properties of such a model.
+
+## Autocorrelation of the recieved signal
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
