@@ -21,7 +21,7 @@ $$\phi_n(t) = 2\pi f_c \tau_n - 2\pi f_{D_n}t.$$
 
 Now we move ahead to derive the various statistical properties of such a model.
 
-### Autocorrelation function (ACF) and Power spectral density (PSD) of the recieved signal
+## Autocorrelation function (ACF) and Power spectral density (PSD) of the recieved signal
 
 We can evaluate the ACF of the recieved signal as 
 
@@ -53,19 +53,30 @@ $$
 \end{aligned}
 $$
 
+### Impact of reciever motion (velocity) on ACF and PSD
 
+The doppler frequency $f_D = \frac{v}{\lambda}$ where $v$ is the velocity of reciever and $\lambda$ is the carrier wavelength. Clearly, f_D$ increases with velocity. This directly influences both ACF and PSD of the received signal.
+- **Slow motion** (small $f_D$): The oscillations of $J_0 \left(2\pi f_D\tau\right)$ are slow, and the ACF decays gradually. Thus, the channel remains correlated over a longer time (i.e. large coherence time).
+- **Fast motion** (large $f_D$): The oscillations are faster and the ACF decays quickly and the channel becomes uncorrelated in a shorter time (i.e. small coherence time).
 
+Thus, a faster-moving receiver experiences quicker channel variations, meaning fading becomes more rapid.
 
+In the frequency domain, the effect of velocity appears as follows:
+- Low velocity narrow Doppler spectrum (PSD is concentrated around the carrier).
+- High velocity → wider Doppler spectrum (PSD spreads out more, increasing Doppler spread).
 
+This widening of the PSD indicates stronger time selectivity of the channel, which has direct implications for system design (e.g., increased inter-carrier interference in OFDM systems which are explained in the upcoming experiments).
+
+The figure below illustrates these effects.
 
 
 | <img src="./images/expt4_R0.jpeg"> <br> *Autocorrelation of the tap gain process* | <img src="./images/expt4_PSD.jpeg"> <br> *Power spectral density of tap gain process* |
 |:----------------------------------------------------------------------------------:|:--------------------------------------------------------------------------:|
 
-Finally, we can define the coherence time as the time it takes for the auto-correlation function to go below a certain threshold for the first time. Let us say this threshold is \(\alpha\). Then, the coherence time is the smallest value of \(\frac{n}{W}\) such that \(R_0[n] = \alpha R_0[0]\), yielding the expression:
+Finally, we can define the coherence time as the time it takes for the auto-correlation function to go below a certain threshold $\alpha$ for the first time. This yeilds the following expression fro coherence time
 
 $$
 \begin{aligned}
-      T_c = \frac{J_0^{-1}(\alpha)}{\pi D_s}
+      T_c = \frac{J_0^{-1}(\alpha)}{\pi f_D}
 \end{aligned}
 $$
