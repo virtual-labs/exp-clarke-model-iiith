@@ -1,11 +1,11 @@
-In this experiment, you will experimentally verify Clarke's fading model. You will do this by comparing the `autocorrelation function` and the `power spectral density` generated analytically by the model and the ones generated experimentally by simulating a realistic scenario.
+In this experiment, you will experimentally verify Clarke's fading model. You will do this by comparing the autocorrelation function and the power spectral density generated analytically by the model and the ones generated experimentally by simulating a realistic scenario.
 
 ### Clarke's Model
-In this tab named `Clarke's model` you will have the following parameters that you can vary.
+In this tab named Clarke's model you will have the following parameters that you can vary.
 
-- `Velocities of 3 vehicles` These parameters can take values from $0$ to $100 m/s$. Vehicle here refers to the receiver, which has a ring of scatterers surrounding it (direction of the velocity does not matter since it is a radially symmetric setting).
-- `Carrier frequency`
-- `No. of scatterers` We have seen in the theory section that more scatterers implies a more accurate modelling of the fading channel
+- Velocities of 3 vehicles: These parameters can take values from $0$ to $100 m/s$. Vehicle here refers to the receiver, which has a ring of scatterers surrounding it (direction of the velocity does not matter since it is a radially symmetric setting).
+- No. of scatterers: We have seen in the theory section that more scatterers implies a more accurate modelling of the fading channel
+- Carrier frequency
 
 In the center, you can see the setting of Clarke's model, with the receiver $R_X$ in the center (red), surrounded by scatterers (green) situated on a circle.
 
@@ -16,11 +16,11 @@ In this tab, you will make the comparison between the results generated using th
 
 In the input tab on the left, you can enter,
 
-- `Vehicle velocity` The velocity at which the reciever is moving
-- `Signal Frequency` This is the frequency (in Hz) of the sinusoid we are transmitting as the message
-- `Carrier Frequency` This is the frequency (in MHz) of the carrier used for communcation
-- `No. of multipaths` How many multipath components are considered in the simulation. This is same as the no. of scatterers considered (considering more paths will give more accurate results)
-- `No. of samples` This is another simulation parameter (a larger value will give more accurate results)
+- Vehicle velocity: The velocity at which the reciever is moving
+- Signal Frequency: This is the frequency (in Hz) of the sinusoid we are transmitting as the message
+- Carrier Frequency: This is the frequency (in MHz) of the carrier used for communcation
+- No. of multipaths: How many multipath components are considered in the simulation. This is same as the no. of scatterers considered (considering more paths will give more accurate results)
+- No. of samples: This is another simulation parameter (a larger value will give more accurate results)
 
 In the image in the center you are given the setting with the receiver surrounded by multiple scatterers at different distances within a range. The received signal envelope is also given for reference.
 
