@@ -70,8 +70,8 @@ This widening of the PSD indicates stronger time selectivity of the channel, whi
 The figure below illustrates these effects.
 
 
-| <img src="./images/acf.png" width = 125%> <br> *Autocorrelation of the tap gain process* | <img src="./images/psd.png" > <br> *Power spectral density of tap gain process* |
-|:----------------------------------------------------------------------------------:|:--------------------------------------------------------------------------:|
+| <img src="./images/acf.png" width="500">  | <img src="./images/psd.png" width="500"> |
+|:-----------------------------:|:-----------------------------:|
 
 Finally, we can define the coherence time as the time it takes for the auto-correlation function to go below a certain threshold $\alpha$ for the first time. This yeilds the following expression fro coherence time
 
