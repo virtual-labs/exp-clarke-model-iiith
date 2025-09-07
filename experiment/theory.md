@@ -18,76 +18,46 @@ $$\phi_n(t) = 2\pi f_c \tau_n - 2\pi f_{D_n}t.$$
 <p align="center">
 <img src="./images/exp4_model.jpg", width='40%'>
 </p>  
-*System model with arriving signals uniformly distributed in angle around the receiver; receiver motion not shown, but will be there leading to Doppler effects*
 
 Now we move ahead to derive the various statistical properties of such a model.
 
-## Autocorrelation of the recieved signal
+### Autocorrelation function (ACF) and Power spectral density (PSD) of the recieved signal
 
+We can evaluate the ACF of the recieved signal as 
 
+$$ A_r(\tau) = E[r(t)r(t+\tau)].$$
 
+Considering that the number of scatterers $N \rightarrow \infty$ which is realistic in rich scattering environments, the $\Delta\Phi \rightarrow 0$. In this limit, Clarke’s model yields the ACF of the received signal as
 
+$$ A_r(\tau) = P_r J_0 \left(2\pi f_D\tau\right)$$
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-Since we assume flat-fading, i.e., the communication signal bandwidth $W$ is much smaller than the reciprocal of the delay spread, the complex baseband signal can be represented by a single tap at each time:
+where $J_0$ is the Bessel function of $0^{th}$ order of first kind given by
 
 $$
 \begin{aligned}
-      y[m] = h_0[m]x[m] + w[m]
+      J_0(x) \triangleq \frac{1}{\pi} \int_0^\pi e^{-jx \cos\theta} \ d\theta
 \end{aligned}
 $$
 
-## Discussion
+The Bessel form reflects the isotropic scattering assumption: contributions from all directions average to this compact closed form.
 
-Given our assumption that the phase of the arriving signal is uniformly distributed in $[0, 2\pi]$, and independently distributed across all angles of arrival $\theta$, the tap gain process $\{h_0[m]\}$ is a sum of many small independent contributions, one from each angle. Therefore, by the central limit theorem, it is reasonable to model the process as Gaussian. It can be shown that this process is stationary with autocorrelation function $R_0[n]$ given by:
-
-$$
-\begin{aligned}
-      R_0[n] = 2a^2 \pi J_0 \left(\frac{n\pi D_s}{W}\right)
-\end{aligned}
-$$
-
-where
+The PSD can now be obtained as usual by taking the Fourier transform of the ACF
 
 $$
 \begin{aligned}
-      J_0(x) \triangleq \frac{1}{\pi} \int_0^\pi \exp(jx \cos\theta) \, d\theta
-\end{aligned}
-$$
-
-is the zeroth order Bessel function of the first kind, and
-
-$$
-\begin{aligned}
-      D_s = 2f_c\frac{v}{c}
-\end{aligned}
-$$
-
-is the Doppler spread.
-
-The power spectral density (PSD) can be obtained as usual by taking the Fourier transform of the auto-correlation function:
-
-$$
-\begin{aligned}
-      S(f)=
+      S_r(f)=
       \begin{cases}
-      \frac{4a^2W}{D_s \sqrt{1 - (2fW/D_s)^2}} & -\frac{D_s}{2W} \leq f \leq \frac{D_s}{2W} \\
+      \frac{P_r}{4\pi f_D}\frac{1}{\sqrt{1-\left(\frac{|f-f_c|}{f_D}\right)^2}}  &  |f-f_c| \leq f_{D} \\
       0 & \text{otherwise}
       \end{cases}
 \end{aligned}
 $$
+
+
+
+
+
+
 
 | <img src="./images/expt4_R0.jpeg"> <br> *Autocorrelation of the tap gain process* | <img src="./images/expt4_PSD.jpeg"> <br> *Power spectral density of tap gain process* |
 |:----------------------------------------------------------------------------------:|:--------------------------------------------------------------------------:|
