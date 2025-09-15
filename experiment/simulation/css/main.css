@@ -281,35 +281,41 @@
         max-width: 1400px;
         margin: 0 auto 20px;
         background: white;
-        border-radius: 0 0 10px 10px; /* Rounded corners only at bottom */
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        border-color:2px solid black;
-     
+        border-radius: 15px; /* Changed to rounded corners all around */
+       
+        border: 2px solid black; /* Added black border */
+        overflow: hidden; /* Keep child elements inside rounded corners */
     }
 
     .v-instruction-container {
-        border: 1.5px solid black;
-        margin-top: 2px; /* Remove top margin */
+        margin-top: 2px;
+        transition: all 0.3s ease;
+        /* Removed border as parent now has border */
     }
 
     .v-collapsible {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         font-weight: 600;
-        padding: 15px 20px;
-        background: #f8f9fa;
-        color: black;
+        padding: 16px 24px;
+        background: white;
+        border-bottom: 1px solid black; /* Changed to only bottom border */
         cursor: pointer;
         position: relative;
-        transition: all 0.3s ease;
+        text-align: center;
     }
 
     .v-collapsible::after {
         content: "▼";
         position: absolute;
-        right: 20px;
-        color: #667eea;
-        font-size: 0.8em;
+        right: 24px;
+        border: 1px solid black;
+        border-radius: 4px; /* Added rounded corners */
+        font-size: 0.9em;
         transition: all 0.3s ease;
+    }
+
+    .v-collapsible.active {
+        background: #e6ecff; /* Slightly darker when active */
     }
 
     .v-collapsible.active::after {
@@ -317,37 +323,84 @@
     }
 
     .v-collapsible:hover {
-        background: #e9ecef;
+        background: #e6ecff;
     }
 
     .v-content {
-        padding: 20px;
+        padding: 25px;
         background: white;
         color: #333;
-    }
-
-    .instruction-tab-title {
-        color: #667eea;
-        margin: 15px 0;
-        font-size: 1.1rem;
-        font-weight: 600;
-    }
-
-    .instruction-tab-title:first-of-type {
-        margin-top: 0;
-    }
-
-    .instruction-list {
-        margin-bottom: 20px;
-    }
-
-    .instruction-list li {
-        margin-bottom: 10px;
+        border-top: none; /* Removed duplicate borders */
         line-height: 1.6;
     }
 
-    .instruction-list li strong {
+    /* Style for instruction headers */
+    .v-content h3 {
         color: #4a5568;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    /* Style for instruction lists */
+    .v-content ol {
+        counter-reset: item;
+        list-style-type: none;
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    .v-content ol li {
+        display: block;
+        margin-bottom: 16px;
+        padding-left: 45px;
+        position: relative;
+        font-weight: normal; /* Ensure text is not bold */
+    }
+
+    .v-content ol li:before {
+        content: counter(item)"";
+        counter-increment: item;
+        border-radius: 50%;
+      
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* Responsive styles for instructions */
+    @media (max-width: 600px) {
+        .v-collapsible {
+            font-size: 1.1rem;
+            padding: 14px 18px;
+        }
+        
+        .v-content {
+            padding: 18px 5%;
+        }
+        
+        .v-content ol li {
+            padding-left: 38px;
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+        }
+        
+        .v-content ol li:before {
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            font-size: 0.85rem;
+        }
+        
+        .v-collapsible-instruction-container {
+            border-radius: 0 0 12px 12px;
+        }
     }
 
     /* Responsive styles for instructions */
@@ -576,4 +629,3 @@
         }
     }
 
- 
