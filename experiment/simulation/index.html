@@ -35,7 +35,7 @@
         
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('clarkes', event)">Clarke's Model</button>
-            <button class="tab-button" onclick="switchTab('realistic', event)">Realistic Model</button>
+            <button class="tab-button" onclick="switchTab('realistic', event)">Realistic Scenario</button>
         </div>
         
         <!-- Updated instructions with improved styling -->
@@ -58,7 +58,7 @@
                     <ol>
                         <li>Set Parameters: Configure vehicle velocity, signal frequency, and carrier frequency.</li>
                         <li>Adjust Complexity: Set the number of multipaths (N) and samples (M) for simulation accuracy.</li>
-                        <li>Run Simulation: Click "Simulate Realistic Model" to generate the fading channel.</li>
+                        <li>Run Simulation: Click "Simulate Realistic Scenario" to generate the fading channel.</li>
                         <li>Analyze Signal: Observe the received signal envelope showing Rayleigh fading.</li>
                         <li>Compare Models: Review how the simulated results match the theoretical predictions.</li>
                     </ol>
@@ -156,7 +156,7 @@
     <div class="lab-layout">
         <!-- Left: Controls Panel (unchanged) -->
         <div class="controls-panel">
-            <h2>Parameters - Realistic Model</h2>
+            <h2>Parameters - Realistic Scenario</h2>
             
             <div class="input-group-container">
                 <div class="control-group">
@@ -192,7 +192,7 @@
                 </div>
             </div>
             
-            <button class="simulate-button" onclick="simulateRealistic()">Simulate Realistic Model</button>
+            <button class="simulate-button" onclick="simulateRealistic()">Simulate Realistic Scenario</button>
 
             <!-- <div class="info-box">
                 <h4>Realistic Model Implementation</h4>
