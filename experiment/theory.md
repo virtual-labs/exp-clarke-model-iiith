@@ -92,6 +92,3 @@ This widening of the PSD indicates stronger time selectivity (i.e. low coherence
 <p align="center">
  <img src="./images/psd.png" width="60%">
 </p> 
-
-
-
