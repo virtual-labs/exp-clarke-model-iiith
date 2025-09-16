@@ -11,6 +11,14 @@
             let realisticAutocorrelationChart = null;
             let realisticPsdChart = null;
 
+            let activeVehicles = 1; // Start with 1 vehicle
+            let vehicleData = [
+                { velocity: 30, frequency: 900 },
+                { velocity: 60, frequency: 900 },
+                { velocity: 90, frequency: 900 }
+            ];
+
+
             // DOM elements - Clarke's Ideal Model
             const velocity1Input = document.getElementById('velocity1');
             const velocity2Input = document.getElementById('velocity2');
@@ -30,12 +38,12 @@
             const realisticEnvCtx = realisticEnvCanvas.getContext('2d');
 
             // Checkboxes for plots
-            const v1AutocorrCheck = document.getElementById('v1-autocorr-check');
-            const v2AutocorrCheck = document.getElementById('v2-autocorr-check');
-            const v3AutocorrCheck = document.getElementById('v3-autocorr-check');
-            const v1PsdCheck = document.getElementById('v1-psd-check');
-            const v2PsdCheck = document.getElementById('v2-psd-check');
-            const v3PsdCheck = document.getElementById('v3-psd-check');
+            // const v1AutocorrCheck = document.getElementById('v1-autocorr-check');
+            // const v2AutocorrCheck = document.getElementById('v2-autocorr-check');
+            // const v3AutocorrCheck = document.getElementById('v3-autocorr-check');
+            // const v1PsdCheck = document.getElementById('v1-psd-check');
+            // const v2PsdCheck = document.getElementById('v2-psd-check');
+            // const v3PsdCheck = document.getElementById('v3-psd-check');
 
             // Switch between tabs
             function switchTab(tabName, event) {
@@ -231,268 +239,321 @@
                 }
             }
 
-            // Draw Clarke's environment
+            // Update the drawEnvironment function to fix scatterers at 25
             function drawEnvironment() {
-                const width = envCanvas.width = envCanvas.offsetWidth;
-                const height = envCanvas.height = envCanvas.offsetHeight;
-                
-                envCtx.clearRect(0, 0, width, height);
-                
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const radius = Math.min(width, height) * 0.35;
-                const numScatterers = parseInt(scatterersInput.value);
+                const width = envCanvas.width = envCanvas.offsetWidth;
+                const height = envCanvas.height = envCanvas.offsetHeight;
+                
+                envCtx.clearRect(0, 0, width, height);
+                
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = Math.min(width, height) * 0.35;
+                const numScatterers = 25; // Fixed at 25
 
-                // Draw scattering circle
-                envCtx.strokeStyle = '#667eea';
-                envCtx.lineWidth = 3;
-                envCtx.beginPath();
-                envCtx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                envCtx.stroke();
+                // Draw scattering circle
+                envCtx.strokeStyle = '#667eea';
+                envCtx.lineWidth = 3;
+                envCtx.beginPath();
+                envCtx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                envCtx.stroke();
 
-                // Draw scatterers
-                envCtx.fillStyle = '#48bb78';
-                for (let i = 0; i < numScatterers; i++) {
-                    const angle = (2 * Math.PI * i) / numScatterers;
-                    const x = centerX + radius * Math.cos(angle);
-                    const y = centerY + radius * Math.sin(angle);
-                    
-                    envCtx.beginPath();
-                    envCtx.arc(x, y, 6, 0, 2 * Math.PI);
-                    envCtx.fill();
-                    
-                    // Draw ray
-                    envCtx.strokeStyle = 'rgba(102, 126, 234, 0.3)';
-                    envCtx.lineWidth = 1;
-                    envCtx.beginPath();
-                    envCtx.moveTo(centerX, centerY);
-                    envCtx.lineTo(x, y);
-                    envCtx.stroke();
-                }
+                // Draw scatterers
+                envCtx.fillStyle = '#48bb78';
+                for (let i = 0; i < numScatterers; i++) {
+                    const angle = (2 * Math.PI * i) / numScatterers;
+                    const x = centerX + radius * Math.cos(angle);
+                    const y = centerY + radius * Math.sin(angle);
+                    
+                    envCtx.beginPath();
+                    envCtx.arc(x, y, 6, 0, 2 * Math.PI);
+                    envCtx.fill();
+                    
+                    // Draw ray
+                    envCtx.strokeStyle = 'rgba(102, 126, 234, 0.3)';
+                    envCtx.lineWidth = 1;
+                    envCtx.beginPath();
+                    envCtx.moveTo(centerX, centerY);
+                    envCtx.lineTo(x, y);
+                    envCtx.stroke();
+                }
 
-                // Draw receiver
-                envCtx.fillStyle = '#e53e3e';
-                envCtx.beginPath();
-                envCtx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
-                envCtx.fill();
-                
-                envCtx.fillStyle = '#2d3748';
-                envCtx.font = 'bold 14px Arial';
-                envCtx.textAlign = 'center';
-                envCtx.fillText('Rx', centerX, centerY + 5);
+                // Draw receiver
+                envCtx.fillStyle = '#e53e3e';
+                envCtx.beginPath();
+                envCtx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
+                envCtx.fill();
+                
+                envCtx.fillStyle = '#2d3748';
+                envCtx.font = 'bold 14px Arial';
+                envCtx.textAlign = 'center';
+                envCtx.fillText('Rx', centerX, centerY + 5);
 
-                // Draw velocity arrow
-                const velocity = parseFloat(velocity1Input.value);
-                if (velocity > 0) {
-                    envCtx.strokeStyle = '#e53e3e';
-                    envCtx.lineWidth = 3;
-                    envCtx.beginPath();
-                    envCtx.moveTo(centerX, centerY - 20);
-                    envCtx.lineTo(centerX + 30, centerY - 20);
-                    envCtx.stroke();
-                    
-                    // Arrow head
-                    envCtx.beginPath();
-                    envCtx.moveTo(centerX + 30, centerY - 20);
-                    envCtx.lineTo(centerX + 25, centerY - 25);
-                    envCtx.moveTo(centerX + 30, centerY - 20);
-                    envCtx.lineTo(centerX + 25, centerY - 15);
-                    envCtx.stroke();
-                    
-                    // Velocity label
-                    envCtx.fillStyle = '#2d3748';
-                    envCtx.font = '12px Arial';
-                    envCtx.fillText(`v = ${velocity} m/s`, centerX + 15, centerY - 30);
-                }
+                // Draw velocity arrow for active vehicle (first one)
+                const velocity = vehicleData[0].velocity;
+                if (velocity > 0) {
+                    envCtx.strokeStyle = '#e53e3e';
+                    envCtx.lineWidth = 3;
+                    envCtx.beginPath();
+                    envCtx.moveTo(centerX, centerY - 20);
+                    envCtx.lineTo(centerX + 30, centerY - 20);
+                    envCtx.stroke();
+                    
+                    // Arrow head
+                    envCtx.beginPath();
+                    envCtx.moveTo(centerX + 30, centerY - 20);
+                    envCtx.lineTo(centerX + 25, centerY - 25);
+                    envCtx.moveTo(centerX + 30, centerY - 20);
+                    envCtx.lineTo(centerX + 25, centerY - 15);
+                    envCtx.stroke();
+                    
+                    // Velocity label
+                    envCtx.fillStyle = '#2d3748';
+                    envCtx.font = '12px Arial';
+                    envCtx.fillText(`v1 = ${velocity} m/s`, centerX + 15, centerY - 30);
+                }
             }
 
-            // Draw realistic environment
+            // Add vehicle management functions
+            function addVehicle() {
+                if (activeVehicles < 3) {
+                    activeVehicles++;
+                    updateVehicleVisibility();
+                    updateIdealPlots();
+                }
+            }
+
+            function removeVehicle(vehicleNumber) {
+                if (activeVehicles > 1) {
+                    // Hide the specific vehicle
+                    document.getElementById(`vehicle${vehicleNumber}-inputs`).style.display = 'none';
+                    
+                    // Adjust active vehicles count
+                    if (vehicleNumber === 2 && activeVehicles === 2) {
+                        activeVehicles = 1;
+                    } else if (vehicleNumber === 3 && activeVehicles === 3) {
+                        activeVehicles = 2;
+                    } else if (vehicleNumber === 2 && activeVehicles === 3) {
+                        // Move vehicle 3 data to vehicle 2
+                        vehicleData[1] = {...vehicleData[2]};
+                        document.getElementById('velocity2').value = vehicleData[1].velocity;
+                        document.getElementById('frequency2').value = vehicleData[1].frequency;
+                        activeVehicles = 2;
+                    }
+                    
+                    updateVehicleVisibility();
+                    updateIdealPlots();
+                }
+            }
+
+            function updateVehicleVisibility() {
+                const addBtn = document.getElementById('add-vehicle-btn');
+                
+                // Show/hide vehicle inputs
+                document.getElementById('vehicle2-inputs').style.display = activeVehicles >= 2 ? 'block' : 'none';
+                document.getElementById('vehicle3-inputs').style.display = activeVehicles >= 3 ? 'block' : 'none';
+                
+                // Show/hide add button
+                addBtn.style.display = activeVehicles < 3 ? 'block' : 'none';
+            }
+
+
+            // Update drawRealisticEnvironment to generate new random positions each time
+            let realisticScattererPositions = [];
+
             function drawRealisticEnvironment() {
-                const width = realisticEnvCanvas.width = realisticEnvCanvas.offsetWidth;
-                const height = realisticEnvCanvas.height = realisticEnvCanvas.offsetHeight;
-                
-                realisticEnvCtx.clearRect(0, 0, width, height);
-                
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const radius = Math.min(width, height) * 0.35;
-                const numMultipaths = parseInt(multipathsInput.value);
+                const width = realisticEnvCanvas.width = realisticEnvCanvas.offsetWidth;
+                const height = realisticEnvCanvas.height = realisticEnvCanvas.offsetHeight;
+                
+                realisticEnvCtx.clearRect(0, 0, width, height);
+                
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = Math.min(width, height) * 0.35;
+                const numMultipaths = parseInt(multipathsInput.value);
 
-                // Draw concentric circles
-                for (let r = 1; r <= 3; r++) {
-                    realisticEnvCtx.strokeStyle = `rgba(102, 126, 234, ${0.3 - r * 0.08})`;
-                    realisticEnvCtx.lineWidth = 2;
-                    realisticEnvCtx.beginPath();
-                    realisticEnvCtx.arc(centerX, centerY, radius * r / 3, 0, 2 * Math.PI);
-                    realisticEnvCtx.stroke();
-                }
+                // Always generate new random positions
+                realisticScattererPositions = [];
+                for (let i = 0; i < numMultipaths; i++) {
+                    realisticScattererPositions.push({
+                        angle: Math.random() * 2 * Math.PI,
+                        distance: radius * (0.5 + 0.5 * Math.random()) // Random distance from center to edge
+                    });
+                }
 
-                // Generate random angles for multipath scatterers
-                const angles = Array.from({length: numMultipaths}, () => Math.random() * 2 * Math.PI);
+                // Draw concentric circles
+                for (let r = 1; r <= 3; r++) {
+                    realisticEnvCtx.strokeStyle = `rgba(102, 126, 234, ${0.3 - r * 0.08})`;
+                    realisticEnvCtx.lineWidth = 2;
+                    realisticEnvCtx.beginPath();
+                    realisticEnvCtx.arc(centerX, centerY, radius * r / 3, 0, 2 * Math.PI);
+                    realisticEnvCtx.stroke();
+                }
 
-                // Draw multipath scatterers with random angles
-                realisticEnvCtx.fillStyle = '#48bb78';
-                for (let i = 0; i < numMultipaths; i++) {
-                    const angle = angles[i]; // Use random angle instead of uniform distribution
-                    const r = radius * (2/3 + (1/3) * Math.random());
-                    const x = centerX + r * Math.cos(angle);
-                    const y = centerY + r * Math.sin(angle);
-                    
-                    realisticEnvCtx.beginPath();
-                    realisticEnvCtx.arc(x, y, 4, 0, 2 * Math.PI);
-                    realisticEnvCtx.fill();
-                    
-                    // Draw ray
-                    realisticEnvCtx.strokeStyle = 'rgba(102, 126, 234, 0.4)';
-                    realisticEnvCtx.lineWidth = 1;
-                    realisticEnvCtx.beginPath();
-                    realisticEnvCtx.moveTo(centerX, centerY);
-                    realisticEnvCtx.lineTo(x, y);
-                    realisticEnvCtx.stroke();
-                }
+                // Use stored positions or generate new ones if not available or count changed
+                if (realisticScattererPositions.length !== numMultipaths) {
+                    realisticScattererPositions = [];
+                    for (let i = 0; i < numMultipaths; i++) {
+                        realisticScattererPositions.push({
+                            angle: Math.random() * 2 * Math.PI,
+                            distance: radius * (2/3 + (1/3) * Math.random())
+                        });
+                    }
+                }
 
-                // Draw receiver
-                realisticEnvCtx.fillStyle = '#e53e3e';
-                realisticEnvCtx.beginPath();
-                realisticEnvCtx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
-                realisticEnvCtx.fill();
-                
-                realisticEnvCtx.fillStyle = '#2d3748';
-                realisticEnvCtx.font = 'bold 14px Arial';
-                realisticEnvCtx.textAlign = 'center';
-                realisticEnvCtx.fillText('Rx', centerX, centerY + 5);
+                // Draw multipath scatterers
+                realisticEnvCtx.fillStyle = '#48bb78';
+                for (let i = 0; i < numMultipaths; i++) {
+                    const pos = realisticScattererPositions[i];
+                    const x = centerX + pos.distance * Math.cos(pos.angle);
+                    const y = centerY + pos.distance * Math.sin(pos.angle);
+                    
+                    realisticEnvCtx.beginPath();
+                    realisticEnvCtx.arc(x, y, 4, 0, 2 * Math.PI);
+                    realisticEnvCtx.fill();
+                    
+                    // Draw ray
+                    realisticEnvCtx.strokeStyle = 'rgba(102, 126, 234, 0.4)';
+                    realisticEnvCtx.lineWidth = 1;
+                    realisticEnvCtx.beginPath();
+                    realisticEnvCtx.moveTo(centerX, centerY);
+                    realisticEnvCtx.lineTo(x, y);
+                    realisticEnvCtx.stroke();
+                }
 
-                // Draw velocity arrow
-                const velocity = parseFloat(velocityRealisticInput.value);
-                if (velocity > 0) {
-                    realisticEnvCtx.strokeStyle = '#e53e3e';
-                    realisticEnvCtx.lineWidth = 3;
-                    realisticEnvCtx.beginPath();
-                    realisticEnvCtx.moveTo(centerX, centerY - 20);
-                    realisticEnvCtx.lineTo(centerX + 30, centerY - 20);
-                    realisticEnvCtx.stroke();
-                    
-                    // Arrow head
-                    realisticEnvCtx.beginPath();
-                    realisticEnvCtx.moveTo(centerX + 30, centerY - 20);
-                    realisticEnvCtx.lineTo(centerX + 25, centerY - 25);
-                    realisticEnvCtx.moveTo(centerX + 30, centerY - 20);
-                    realisticEnvCtx.lineTo(centerX + 25, centerY - 15);
-                    realisticEnvCtx.stroke();
-                    
-                    // Velocity label
-                    realisticEnvCtx.fillStyle = '#2d3748';
-                    realisticEnvCtx.font = '12px Arial';
-                    realisticEnvCtx.fillText(`v = ${velocity} m/s`, centerX + 15, centerY - 30);
-                }
+                // Draw receiver
+                realisticEnvCtx.fillStyle = '#e53e3e';
+                realisticEnvCtx.beginPath();
+                realisticEnvCtx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
+                realisticEnvCtx.fill();
+                
+                realisticEnvCtx.fillStyle = '#2d3748';
+                realisticEnvCtx.font = 'bold 14px Arial';
+                realisticEnvCtx.textAlign = 'center';
+                realisticEnvCtx.fillText('Rx', centerX, centerY + 5);
+
+                // Draw velocity arrow
+                const velocity = parseFloat(velocityRealisticInput.value);
+                if (velocity > 0) {
+                    realisticEnvCtx.strokeStyle = '#e53e3e';
+                    realisticEnvCtx.lineWidth = 3;
+                    realisticEnvCtx.beginPath();
+                    realisticEnvCtx.moveTo(centerX, centerY - 20);
+                    realisticEnvCtx.lineTo(centerX + 30, centerY - 20);
+                    realisticEnvCtx.stroke();
+                    
+                    // Arrow head
+                    realisticEnvCtx.beginPath();
+                    realisticEnvCtx.moveTo(centerX + 30, centerY - 20);
+                    realisticEnvCtx.lineTo(centerX + 25, centerY - 25);
+                    realisticEnvCtx.moveTo(centerX + 30, centerY - 20);
+                    realisticEnvCtx.lineTo(centerX + 25, centerY - 15);
+                    realisticEnvCtx.stroke();
+                    
+                    // Velocity label
+                    realisticEnvCtx.fillStyle = '#2d3748';
+                    realisticEnvCtx.font = '12px Arial';
+                    realisticEnvCtx.fillText(`v = ${velocity} m/s`, centerX + 15, centerY - 30);
+                }
             }
 
-            // Update ideal plots
             function updateIdealPlots() {
-                const velocities = [
-                    parseFloat(velocity1Input.value),
-                    parseFloat(velocity2Input.value),
-                    parseFloat(velocity3Input.value)
-                ];
-                const frequency = parseFloat(frequencyInput.value);
-                const maxTau = 0.02;
+                // Update vehicleData from inputs
+                for (let i = 0; i < activeVehicles; i++) {
+                    const velocityInput = document.getElementById(`velocity${i + 1}`);
+                    const frequencyInput = document.getElementById(`frequency${i + 1}`);
+                    if (velocityInput && frequencyInput) {
+                        vehicleData[i].velocity = parseFloat(velocityInput.value);
+                        vehicleData[i].frequency = parseFloat(frequencyInput.value);
+                    }
+                }
 
-                const autocorrDatasets = [];
-                const psdDatasets = [];
-                const colors = ['#e53e3e', '#48bb78', '#9f7aea'];
-                const labels = ['Vehicle 1', 'Vehicle 2', 'Vehicle 3'];
-                const autocorrChecks = [v1AutocorrCheck, v2AutocorrCheck, v3AutocorrCheck];
-                const psdChecks = [v1PsdCheck, v2PsdCheck, v3PsdCheck];
+                const maxTau = 0.02;
+                const autocorrDatasets = [];
+                const psdDatasets = [];
+                const colors = ['#e53e3e', '#48bb78', '#9f7aea'];
+                const labels = ['Vehicle 1', 'Vehicle 2', 'Vehicle 3'];
 
-                // Prepare autocorrelation datasets
-                for (let i = 0; i < 3; i++) {
-                    if (autocorrChecks[i].checked) {
-                        const data = calculateAutocorrelation(velocities[i], frequency, maxTau);
-                        autocorrDatasets.push({
-                            label: `${labels[i]} (${velocities[i]} m/s)`,
-                            data: data,
-                            borderColor: colors[i],
-                            backgroundColor: colors[i] + '20',
-                            borderWidth: 2,
-                            fill: false,
-                            tension: 0.4,
-                            pointRadius: 0
-                        });
-                    }
-                }
+                // Show all active vehicles (no checkbox checking needed)
+                for (let i = 0; i < activeVehicles; i++) {
+                    // Autocorrelation data
+                    const autocorrData = calculateAutocorrelation(vehicleData[i].velocity, vehicleData[i].frequency, maxTau);
+                    autocorrDatasets.push({
+                        label: `${labels[i]} (${vehicleData[i].velocity} m/s, ${vehicleData[i].frequency} MHz)`,
+                        data: autocorrData,
+                        borderColor: colors[i],
+                        backgroundColor: colors[i] + '20',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 0
+                    });
 
-                // Prepare PSD datasets
-                for (let i = 0; i < 3; i++) {
-                    if (psdChecks[i].checked) {
-                        const data = calculatePSD(velocities[i], frequency);
-                        psdDatasets.push({
-                            label: `${labels[i]} (${velocities[i]} m/s)`,
-                            data: data,
-                            borderColor: colors[i],
-                            backgroundColor: colors[i] + '20',
-                            borderWidth: 2,
-                            fill: false,
-                            tension: 0.2,
-                            pointRadius: 0
-                        });
-                    }
-                }
+                    // PSD data
+                    const psdData = calculatePSD(vehicleData[i].velocity, vehicleData[i].frequency);
+                    psdDatasets.push({
+                        label: `${labels[i]} (${vehicleData[i].velocity} m/s, ${vehicleData[i].frequency} MHz)`,
+                        data: psdData,
+                        borderColor: colors[i],
+                        backgroundColor: colors[i] + '20',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.2,
+                        pointRadius: 0
+                    });
+                }
 
-                // Update charts
-                if (autocorrelationChart) autocorrelationChart.destroy();
-                if (psdChart) psdChart.destroy();
+                // Update charts
+                if (autocorrelationChart) autocorrelationChart.destroy();
+                if (psdChart) psdChart.destroy();
 
-                // Create autocorrelation chart
-                autocorrelationChart = new Chart(document.getElementById('autocorrelationChart'), {
-                    type: 'line',
-                    data: { datasets: autocorrDatasets },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: true } },
-                        scales: {
-                            x: {
-                                type: 'linear',
-                                title: { display: true, text: 'Time τ (ms)' },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            },
-                            y: {
-                                title: { display: true, text: 'R(τ)' },
-                                min: -1,
-                                max: 1,
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            }
-                        }
-                    }
-                });
+                // Create autocorrelation chart
+                autocorrelationChart = new Chart(document.getElementById('autocorrelationChart'), {
+                    type: 'line',
+                    data: { datasets: autocorrDatasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true } },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: { display: true, text: 'Time τ (ms)' },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            y: {
+                                title: { display: true, text: 'R(τ)' },
+                                min: -1,
+                                max: 1,
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        }
+                    }
+                });
 
-                // Create PSD chart
-                psdChart = new Chart(document.getElementById('psdChart'), {
-                    type: 'line',
-                    data: { datasets: psdDatasets },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: true } },
-                        scales: {
-                            x: {
-                                type: 'linear',
-                                title: { display: true, text: 'Frequency (Hz)' },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            },
-                            y: {
-                                type: 'linear',
-                                title: { display: true, text: 'Power Spectral Density S(f)' },
-                                min: 0,
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            }
-                        }
-                    }
-                });
-
-                // Show panels
-                document.getElementById('autocorrelationPanel').style.display = 'block';
-                document.getElementById('psdPanel').style.display = 'block';
+                // Create PSD chart
+                psdChart = new Chart(document.getElementById('psdChart'), {
+                    type: 'line',
+                    data: { datasets: psdDatasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true } },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: { display: true, text: 'Frequency (Hz)' },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            y: {
+                                type: 'linear',
+                                title: { display: true, text: 'Power Spectral Density S(f)' },
+                                min: 0,
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        }
+                    }
+                });
             }
 
             // Simulate Clarke's ideal model
@@ -501,264 +562,297 @@
                 drawEnvironment();
             }
 
-            // Simulate realistic model
+            // Update simulateRealistic to regenerate obstacles
             function simulateRealistic() {
-                // // Show panels first
-                // document.getElementById('realisticAutocorrelationPanel').style.display = 'block';
-                // document.getElementById('realisticPsdPanel').style.display = 'block';
+                drawRealisticEnvironment();
+                
+                const velocity = parseFloat(velocityRealisticInput.value);
+                const frequency = parseFloat(frequencyRealisticInput.value);
+                const N = parseInt(multipathsInput.value);
+                const numSamples = parseInt(samplesInput.value);
+                const signalFreq = parseFloat(document.getElementById('signal-frequency').value);
 
-                const velocity = parseFloat(velocityRealisticInput.value);
-                const frequency = parseFloat(frequencyRealisticInput.value);
-                const N = parseInt(multipathsInput.value);
-                const numSamples = parseInt(samplesInput.value);
-                const signalFreq = parseFloat(document.getElementById('signal-frequency').value);
+                // Rest of the function remains the same...
+                const wavelength = SPEED_OF_LIGHT / (frequency * 1e6);
+                const fD = velocity / wavelength;
+                const Ts = 1 / (20 * Math.max(fD, 1));
+                
+                // Generate channel response
+                const channelResponse = generateJakesRayleighFading(velocity, frequency, N, numSamples, Ts);
+                const hI = channelResponse.hI;
+                const hQ = channelResponse.hQ;
 
+                // Generate transmitted sine signal
+                const transmittedSignal = Array.from({length: numSamples}, (_, n) => 
+                    Math.sin(2 * Math.PI * signalFreq * n * Ts)
+                );
 
-                const wavelength = SPEED_OF_LIGHT / (frequency * 1e6);
-                const fD = velocity / wavelength;
-                const Ts = 1 / (20 * Math.max(fD, 1));
-                
-                // Generate channel response
-                const channelResponse = generateJakesRayleighFading(velocity, frequency, N, numSamples, Ts);
-                const hI = channelResponse.hI;
-                const hQ = channelResponse.hQ;
+                // Calculate received signal
+                const receivedI = hI.map((h, idx) => h * transmittedSignal[idx]);
+                const receivedQ = hQ.map((h, idx) => h * transmittedSignal[idx]);
 
-                // Generate transmitted sine signal
-                const transmittedSignal = Array.from({length: numSamples}, (_, n) => 
-                    Math.sin(2 * Math.PI * signalFreq * n * Ts)
-                );
+                // Calculate envelope
+                const envelope = receivedI.map((real, idx) => Math.sqrt(real * real + receivedQ[idx] * receivedQ[idx]));
+                
+                // Plot received signal envelope
+                const plotSamples = Math.min(200, numSamples);
+                const timeAxis = Array.from({length: plotSamples}, (_, i) => i * Ts * 1000);
+                const envelopeData = envelope.slice(0, plotSamples).map((val, idx) => ({
+                    x: timeAxis[idx],
+                    y: val
+                }));
 
-                // Calculate received signal: r(t) = h(t) * s(t) (convolution simplified to multiplication for baseband)
-                const receivedI = hI.map((h, idx) => h * transmittedSignal[idx]);
-                const receivedQ = hQ.map((h, idx) => h * transmittedSignal[idx]);
+                if (receivedSignalChart) receivedSignalChart.destroy();
+                
+                receivedSignalChart = new Chart(document.getElementById('receivedSignalChart'), {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Envelope |r(t)|',
+                            data: envelopeData,
+                            borderColor: '#48bb78',
+                            backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true } },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: { display: true, text: 'Time (ms)' },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            y: {
+                                type: 'linear',
+                                title: { display: true, text: 'Amplitude' },
+                                min: 0,
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        }
+                    }
+                });
 
-                // Calculate envelope
-                const envelope = receivedI.map((real, idx) => Math.sqrt(real * real + receivedQ[idx] * receivedQ[idx]));
-                
-                // Plot received signal envelope
-                const plotSamples = Math.min(200, numSamples);
-                const timeAxis = Array.from({length: plotSamples}, (_, i) => i * Ts * 1000);
-                const envelopeData = envelope.slice(0, plotSamples).map((val, idx) => ({
-                    x: timeAxis[idx],
-                    y: val
-                }));
+                // Calculate autocorrelation
+                const maxLag = Math.min(Math.floor(numSamples / 4), 50);
+                const simulatedAutocorr = calculateAutocorrelationFromComplexSeries(hI, hQ);
+                
+                const idealAutocorr = [];
+                const timeAxisCorr = [];
+                
+                for (let i = 0; i <= maxLag; i++) {
+                    const tau = i * Ts;
+                    timeAxisCorr.push(tau * 1000);
+                    idealAutocorr.push(besselJ0(2 * Math.PI * fD * tau));
+                }
+                
+                const realisticAutocorrData = simulatedAutocorr.slice(0, maxLag + 1).map((val, idx) => ({
+                    x: timeAxisCorr[idx],
+                    y: val
+                }));
+                
+                const idealAutocorrData = idealAutocorr.map((val, idx) => ({
+                    x: timeAxisCorr[idx],
+                    y: val
+                }));
+                
+                // Calculate PSD
+                const realisticPSDResult = calculatePSDFromComplexSeries(hI, hQ, numSamples, Ts);
+                const idealPSD = calculatePSD(velocity, frequency);
+                
+                const realisticPSDData = realisticPSDResult.psd.map((val, idx) => ({
+                    x: realisticPSDResult.freqs[idx],
+                    y: val
+                }));
 
-                if (receivedSignalChart) receivedSignalChart.destroy();
-                
-                receivedSignalChart = new Chart(document.getElementById('receivedSignalChart'), {
-                    type: 'line',
-                    data: {
-                        datasets: [{
-                            label: 'Envelope |r(t)|',
-                            data: envelopeData,
-                            borderColor: '#48bb78',
-                            backgroundColor: 'rgba(72, 187, 120, 0.1)',
-                            borderWidth: 2,
-                            fill: false,
-                            tension: 0.1,
-                            pointRadius: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: true } },
-                        scales: {
-                            x: {
-                                type: 'linear',
-                                title: { display: true, text: 'Time (ms)' },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            },
-                            y: {
-                                type: 'linear',
-                                title: { display: true, text: 'Amplitude' },
-                                min: 0,
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            }
-                        }
-                    }
-                });
-
-                // Calculate autocorrelation
-                const maxLag = Math.min(Math.floor(numSamples / 4), 50);
-                const simulatedAutocorr = calculateAutocorrelationFromComplexSeries(hI, hQ);
-                
-                const idealAutocorr = [];
-                const timeAxisCorr = [];
-                
-                for (let i = 0; i <= maxLag; i++) {
-                    const tau = i * Ts;
-                    timeAxisCorr.push(tau * 1000);
-                    idealAutocorr.push(besselJ0(2 * Math.PI * fD * tau));
-                }
-                
-                const realisticAutocorrData = simulatedAutocorr.slice(0, maxLag + 1).map((val, idx) => ({
-                    x: timeAxisCorr[idx],
-                    y: val
-                }));
-                
-                const idealAutocorrData = idealAutocorr.map((val, idx) => ({
-                    x: timeAxisCorr[idx],
-                    y: val
-                }));
-                
-                // Calculate PSD
-                const realisticPSDResult = calculatePSDFromComplexSeries(hI, hQ, numSamples, Ts);
-                const idealPSD = calculatePSD(velocity, frequency);
-                
-                const realisticPSDData = realisticPSDResult.psd.map((val, idx) => ({
-                    x: realisticPSDResult.freqs[idx],
-                    y: val
-                }));
-
-                // Update autocorrelation chart
-                if (realisticAutocorrelationChart) realisticAutocorrelationChart.destroy();
-                
-                realisticAutocorrelationChart = new Chart(document.getElementById('realisticAutocorrelationChart'), {
-                    type: 'line',
-                    data: {
-                        datasets: [
-                            {
-                                label: 'Jakes Model (Simulated)',
-                                data: realisticAutocorrData,
-                                borderColor: '#e53e3e',
-                                backgroundColor: 'rgba(229, 62, 62, 0.1)',
-                                borderWidth: 2,
-                                fill: false,
-                                tension: 0.1,
-                                pointRadius: 0
-                            },
-                            {
-                                label: 'Clarke Model (Theoretical)',
-                                data: idealAutocorrData,
-                                borderColor: '#667eea',
-                                backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                                borderWidth: 2,
-                                fill: false,
-                                tension: 0.4,
-                                pointRadius: 0,
-                                borderDash: [5, 5]
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: true } },
-                        scales: {
-                            x: {
-                                type: 'linear',
-                                title: { display: true, text: 'Time τ (ms)' },
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            },
-                            y: {
-                                title: { display: true, text: 'R(τ)' },
-                                min: -1,
-                                max: 1,
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            }
-                        }
-                    }
-                });
-                
-                // Update PSD chart
-                if (realisticPsdChart) realisticPsdChart.destroy();
-                
-                realisticPsdChart = new Chart(document.getElementById('realisticPsdChart'), {
-                    type: 'line',
-                    data: {
-                        datasets: [
-                            {
-                                label: 'Jakes Model (Simulated)',
-                                data: realisticPSDData,
-                                borderColor: '#e53e3e',
-                                backgroundColor: 'rgba(229, 62, 62, 0.1)',
-                                borderWidth: 2,
-                                fill: false,
-                                tension: 0.1,
-                                pointRadius: 0
-                            },
-                            {
-                                label: 'Clarke Model (Theoretical)',
-                                data: idealPSD,
-                                borderColor: '#667eea',
-                                backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                                borderWidth: 2,
-                                fill: false,
-                                tension: 0.2,
-                                pointRadius: 0,
-                                borderDash: [5, 5]
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: true } },
-                        scales: {
-                            x: {
-                                type: 'linear',
-                                title: { display: true, text: 'Frequency (Hz)' },
-                                min: -500,
-                                max: 500,
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            },
-                            y: {
-                                type: 'linear',
-                                title: { display: true, text: 'Power Spectral Density S(f)' },
-                                min: 0,
-                                grid: { color: 'rgba(0,0,0,0.1)' }
-                            }
-                        }
-                    }
-                });
-                
-                // Show panels
-                document.getElementById('realisticAutocorrelationPanel').style.display = 'block';
-                document.getElementById('realisticPsdPanel').style.display = 'block';
-                drawRealisticEnvironment();
+                // Update autocorrelation chart
+                if (realisticAutocorrelationChart) realisticAutocorrelationChart.destroy();
+                
+                realisticAutocorrelationChart = new Chart(document.getElementById('realisticAutocorrelationChart'), {
+                    type: 'line',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Jakes Model (Simulated)',
+                                data: realisticAutocorrData,
+                                borderColor: '#e53e3e',
+                                backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.1,
+                                pointRadius: 0
+                            },
+                            {
+                                label: 'Clarke Model (Theoretical)',
+                                data: idealAutocorrData,
+                                borderColor: '#667eea',
+                                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.4,
+                                pointRadius: 0,
+                                borderDash: [5, 5]
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true } },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: { display: true, text: 'Time τ (ms)' },
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            y: {
+                                title: { display: true, text: 'R(τ)' },
+                                min: -1,
+                                max: 1,
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        }
+                    }
+                });
+                
+                // Update PSD chart
+                if (realisticPsdChart) realisticPsdChart.destroy();
+                
+                realisticPsdChart = new Chart(document.getElementById('realisticPsdChart'), {
+                    type: 'line',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Jakes Model (Simulated)',
+                                data: realisticPSDData,
+                                borderColor: '#e53e3e',
+                                backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.1,
+                                pointRadius: 0
+                            },
+                            {
+                                label: 'Clarke Model (Theoretical)',
+                                data: idealPSD,
+                                borderColor: '#667eea',
+                                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.2,
+                                pointRadius: 0,
+                                borderDash: [5, 5]
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true } },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: { display: true, text: 'Frequency (Hz)' },
+                                min: -500,
+                                max: 500,
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            },
+                            y: {
+                                type: 'linear',
+                                title: { display: true, text: 'Power Spectral Density S(f)' },
+                                min: 0,
+                                grid: { color: 'rgba(0,0,0,0.1)' }
+                            }
+                        }
+                    }
+                });
+                
+                // Show panels
+                document.getElementById('realisticAutocorrelationPanel').style.display = 'block';
+                document.getElementById('realisticPsdPanel').style.display = 'block';
             }
 
-            // Event listeners for Clarke's model
-            velocity1Input.addEventListener('input', () => {
-                updateIdealPlots();
-                drawEnvironment();
+            // Add this function to handle the "Update Plots" button
+            document.addEventListener('DOMContentLoaded', () => {
+                // Add click handler for the Update Plots button
+                const updatePlotsBtn = document.getElementById('simulate-ideal-btn');
+                if (updatePlotsBtn) {
+                    updatePlotsBtn.addEventListener('click', () => {
+                        updateIdealPlots();
+                    });
+                }
+                
+                // Initialize the interface
+                updateVehicleVisibility();
+                updateIdealPlots();
+                drawEnvironment();
             });
-                    velocity2Input.addEventListener('input', updateIdealPlots);
-             velocity3Input.addEventListener('input', updateIdealPlots);
-             frequencyInput.addEventListener('input', updateIdealPlots);
-             scatterersInput.addEventListener('input', drawEnvironment);
 
-            // Event listeners for realistic model 
-            velocityRealisticInput.addEventListener('input', drawRealisticEnvironment);
-            frequencyRealisticInput.addEventListener('input', drawRealisticEnvironment);
-            multipathsInput.addEventListener('input', drawRealisticEnvironment);
-            signalFrequencyInput.addEventListener('input', drawRealisticEnvironment);
+            // Replace the window resize event listener with this updated version:
+            window.addEventListener('resize', () => {
+                setTimeout(() => {
+                    if (currentTab === 'clarkes') {
+                        simulateIdeal();
+                    } else if (currentTab === 'realistic') {
+                        simulateRealistic();
+                    }
+                }, 100);
+            });
 
-             // Listeners for checkboxes to update ideal plots
-             v1AutocorrCheck.addEventListener('change', updateIdealPlots);
-             v2AutocorrCheck.addEventListener('change', updateIdealPlots);
-             v3AutocorrCheck.addEventListener('change', updateIdealPlots);
-             v1PsdCheck.addEventListener('change', updateIdealPlots);
-             v2PsdCheck.addEventListener('change', updateIdealPlots);
-             v3PsdCheck.addEventListener('change', updateIdealPlots);
-             
-             window.addEventListener('resize', () => {
-             setTimeout(() => {
-              if (currentTab === 'clarkes') {
-             simulateIdeal();
-             drawEnvironment();
-              } else if (currentTab === 'realistic') {
-             simulateRealistic();
-             drawRealisticEnvironment();
-              }
-             }, 100);
-             });
+            // Update event listeners at the end
+            document.addEventListener('DOMContentLoaded', () => {
+                // Initialize vehicle management
+                updateVehicleVisibility();
+                
+                // Add event listeners for vehicle management
+                document.getElementById('add-vehicle-btn').addEventListener('click', addVehicle);
+                document.getElementById('remove-vehicle-2-btn').addEventListener('click', () => removeVehicle(2));
+                document.getElementById('remove-vehicle-3-btn').addEventListener('click', () => removeVehicle(3));
+                
+                // Event listeners for vehicle inputs
+                document.getElementById('velocity1').addEventListener('input', () => {
+                    vehicleData[0].velocity = parseFloat(document.getElementById('velocity1').value);
+                    updateIdealPlots();
+                    drawEnvironment();
+                });
+                
+                document.getElementById('frequency1').addEventListener('input', () => {
+                    vehicleData[0].frequency = parseFloat(document.getElementById('frequency1').value);
+                    updateIdealPlots();
+                });
+                
+                document.getElementById('velocity2').addEventListener('input', () => {
+                    vehicleData[1].velocity = parseFloat(document.getElementById('velocity2').value);
+                    updateIdealPlots();
+                });
+                
+                document.getElementById('frequency2').addEventListener('input', () => {
+                    vehicleData[1].frequency = parseFloat(document.getElementById('frequency2').value);
+                    updateIdealPlots();
+                });
+                
+                document.getElementById('velocity3').addEventListener('input', () => {
+                    vehicleData[2].velocity = parseFloat(document.getElementById('velocity3').value);
+                    updateIdealPlots();
+                });
+                
+                document.getElementById('frequency3').addEventListener('input', () => {
+                    vehicleData[2].frequency = parseFloat(document.getElementById('frequency3').value);
+                    updateIdealPlots();
+                });
 
-             document.addEventListener('DOMContentLoaded', () => {
-            //  document.getElementById('autocorrelationPanel').style.display = 'none';
-            //  document.getElementById('psdPanel').style.display = 'none';
-            //  document.getElementById('realisticAutocorrelationPanel').style.display = 'none';
-            //  document.getElementById('realisticPsdPanel').style.display = 'none';
-             drawEnvironment();
-             });
+                // Listeners for checkboxes to update ideal plots
+                // v1AutocorrCheck.addEventListener('change', updateIdealPlots);
+                // v2AutocorrCheck.addEventListener('change', updateIdealPlots);
+                // v3AutocorrCheck.addEventListener('change', updateIdealPlots);
+                // v1PsdCheck.addEventListener('change', updateIdealPlots);
+                // v2PsdCheck.addEventListener('change', updateIdealPlots);
+                // v3PsdCheck.addEventListener('change', updateIdealPlots);
+                
+                drawEnvironment();
+            });
