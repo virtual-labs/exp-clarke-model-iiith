@@ -97,6 +97,265 @@
         height: fit-content;
     }
 
+    .vehicle-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .vehicle-header h4 {
+        margin: 0;
+    }
+
+    .remove-btn {
+        background-color: #e53e3e;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .remove-btn:hover {
+        background-color: #c53030;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 10px;
+        margin: 15px 0;
+    }
+
+    .secondary-btn {
+        background-color: #667eea;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        flex: 1;
+    }
+
+    .secondary-btn:hover {
+        background-color: #5a67d8;
+    }
+
+    .primary-btn {
+        background-color: #48bb78;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        flex: 1;
+    }
+
+    .primary-btn:hover {
+        background-color: #38a169;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid #e2e8f0;
+        margin: 15px 0;
+    }
+
+
+    /* Add these styles to your existing CSS file or replace the existing ones */
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #4a5568;
+    font-size: 14px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.input-field::-webkit-outer-spin-button,
+.input-field::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input-field[type=number] {
+    -moz-appearance: textfield;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.vehicle-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.vehicle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.vehicle-header h4 {
+    margin: 0;
+    color: #2d3748;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.remove-btn {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.remove-btn:hover {
+    background-color: #c53030;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    color: #4a5568;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    accent-color: #667eea;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.secondary-btn {
+    background-color: #667eea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+    transition: background-color 0.3s ease;
+}
+
+.secondary-btn:hover {
+    background-color: #5a67d8;
+}
+
+.primary-btn {
+    background-color: #48bb78;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+    transition: background-color 0.3s ease;
+}
+
+.primary-btn:hover {
+    background-color: #38a169;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 20px 0;
+}
+
+/* Update the simulate button to match the style */
+.simulate-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: #667eea;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.simulate-button:hover {
+    background-color: #5a6ac2;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 600px) {
+    .vehicle-section {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .vehicle-header h4 {
+        font-size: 1.1rem;
+    }
+    
+    .button-container {
+        flex-direction: column;
+    }
+    
+    .checkbox-group {
+        gap: 8px;
+    }
+    
+    .input-field {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
     /* New CSS for realistic model center panels */
     .realistic-center-panels {
         display: flex;
@@ -628,4 +887,3 @@
             margin: 0 4px;
         }
     }
-

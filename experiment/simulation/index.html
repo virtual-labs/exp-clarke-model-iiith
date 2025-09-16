@@ -65,89 +65,91 @@
                 </div>
             </div>
         </div>
-        <div id="clarkes" class="tab-content active">
+        <!-- Replace the controls-panel div in Clarke's Model section with this: -->
+<div id="clarkes" class="tab-content active">
     <div class="lab-layout">
-        <!-- Left: Controls Panel (unchanged) -->
+
         <div class="controls-panel">
             <h2>Parameters - Clarke's Model</h2>
             
-            <div class="input-group-container">
-                <div class="control-group">
-                    <label for="velocity1">Vehicle 1 Velocity (m/s)</label>
-                    <input type="number" id="velocity1" value="30" min="0" max="100" step="1">
-                    <div class="help-text">Controls Doppler spread and fading rate.</div>
+            <div class="vehicle-section">
+                <h4>Vehicle 1</h4>
+                <div class="input-group">
+                    <label for="velocity1">Velocity (m/s):</label>
+                    <input type="number" id="velocity1" value="30" class="input-field">
                 </div>
-
-                <div class="control-group">
-                    <label for="velocity2">Vehicle 2 Velocity (m/s)</label>
-                    <input type="number" id="velocity2" value="60" min="0" max="100" step="1">
-                    <div class="help-text">Controls Doppler spread and fading rate.</div>
-                </div>
-                
-                <div class="control-group">
-                    <label for="velocity3">Vehicle 3 Velocity (m/s)</label>
-                    <input type="number" id="velocity3" value="90" min="0" max="100" step="1">
-                    <div class="help-text">Controls Doppler spread and fading rate.</div>
+                <div class="input-group">
+                    <label for="frequency1">Carrier Frequency (MHz):</label>
+                    <input type="number" id="frequency1" value="900" class="input-field">
                 </div>
             </div>
-            <div class="input-group-container">
-                <div class="control-group">
-                    <label for="frequency">Carrier Frequency (MHz)</label>
-                    <input type="number" id="frequency" value="900" min="100" max="6000" step="100">
-                    <div class="help-text">Affects wavelength and Doppler frequency.</div>
-                </div>
 
-                <div class="control-group">
-                    <label for="scatterers">Number of Scatterers</label>
-                    <input type="number" id="scatterers" value="20" min="6" max="50" step="2">
-                    <div class="help-text">More scatterers provide a better approximation of the model.</div>
+            <div id="vehicle2-inputs" class="vehicle-section" style="display: none;">
+                <div class="vehicle-header">
+                    <h4>Vehicle 2</h4>
+                    <button id="remove-vehicle-2-btn" class="remove-btn">- Remove</button>
+                </div>
+                <div class="input-group">
+                    <label for="velocity2">Velocity (m/s):</label>
+                    <input type="number" id="velocity2" value="60" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label for="frequency2">Carrier Frequency (MHz):</label>
+                    <input type="number" id="frequency2" value="900" class="input-field">
                 </div>
             </div>
-            
-            <button class="simulate-button" onclick="simulateIdeal()">Simulate Clarke's Model</button>
 
-            <!-- <div class="info-box">
-                <h4>Clarke's Model</h4>
-                <p>This model is based on statistical properties rather than direct simulation. It assumes isotropic scattering, meaning signals arrive from all directions with equal probability, leading to a theoretical Bessel function for autocorrelation and a classic "bathtub" shape for the Doppler power spectrum.</p>
-                <ul style="margin: 10px 0 0 20px; line-height: 1.6;">
-                    <li>Scatterers are uniformly distributed around the receiver.</li>
-                    <li>Each signal path has equal average power.</li>
-                </ul>
-            </div> -->
+            <div id="vehicle3-inputs" class="vehicle-section" style="display: none;">
+                 <div class="vehicle-header">
+                    <h4>Vehicle 3</h4>
+                    <button id="remove-vehicle-3-btn" class="remove-btn">- Remove</button>
+                </div>
+                <div class="input-group">
+                    <label for="velocity3">Velocity (m/s):</label>
+                    <input type="number" id="velocity3" value="90" class="input-field">
+                </div>
+                 <div class="input-group">
+                    <label for="frequency3">Carrier Frequency (MHz):</label>
+                    <input type="number" id="frequency3" value="900" class="input-field">
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button id="add-vehicle-btn" class="secondary-btn">+ Add Vehicle</button>
+                <button id="simulate-ideal-btn" class="primary-btn">Update Plots</button>
+            </div>
         </div>
 
-        <!-- Center: Environment Panel (unchanged) -->
         <div class="environment-panel">
             <h2>Scattering Environment</h2>
             <canvas id="environmentCanvas" class="environment-canvas"></canvas>
         </div>
         
-        <!-- Right: Output Panel with stacked charts -->
         <div class="output-panel">
             <div class="chart-panel">
                 <h3>Autocorrelation Function R(τ)</h3>
-                <div class="checkbox-group">
+                <!-- <div class="checkbox-group">
                     <label><input type="checkbox" id="v1-autocorr-check" checked> Vehicle 1</label>
                     <label><input type="checkbox" id="v2-autocorr-check" checked> Vehicle 2</label>
                     <label><input type="checkbox" id="v3-autocorr-check" checked> Vehicle 3</label>
-                </div>
+                </div> -->
                 <div class="chart-container">
                     <canvas id="autocorrelationChart"></canvas>
                 </div>
             </div>
-
             <div class="chart-panel">
                 <h3>Power Spectral Density S(f)</h3>
-                <div class="checkbox-group">
+                <!-- <div class="checkbox-group">
                     <label><input type="checkbox" id="v1-psd-check" checked> Vehicle 1</label>
                     <label><input type="checkbox" id="v2-psd-check" checked> Vehicle 2</label>
                     <label><input type="checkbox" id="v3-psd-check" checked> Vehicle 3</label>
-                </div>
+                </div> -->
                 <div class="chart-container">
                     <canvas id="psdChart"></canvas>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
