@@ -588,16 +588,18 @@
                 );
 
                 // Calculate received signal
-                const receivedI = hI.map((h, idx) => h * transmittedSignal[idx]);
-                const receivedQ = hQ.map((h, idx) => h * transmittedSignal[idx]);
+                // const receivedI = hI.map((h, idx) => h * transmittedSignal[idx]);
+                // const receivedQ = hQ.map((h, idx) => h * transmittedSignal[idx]);
 
                 // Calculate envelope
-                const envelope = receivedI.map((real, idx) => Math.sqrt(real * real + receivedQ[idx] * receivedQ[idx]));
+                
+                // Calculate received signal (real part only for visualization)
+                const receivedSignal = hI.map((h, idx) => h * transmittedSignal[idx]);
                 
                 // Plot received signal envelope
                 const plotSamples = Math.min(200, numSamples);
                 const timeAxis = Array.from({length: plotSamples}, (_, i) => i * Ts * 1000);
-                const envelopeData = envelope.slice(0, plotSamples).map((val, idx) => ({
+                const receivedData = receivedSignal.slice(0, plotSamples).map((val, idx) => ({
                     x: timeAxis[idx],
                     y: val
                 }));
@@ -608,8 +610,8 @@
                     type: 'line',
                     data: {
                         datasets: [{
-                            label: 'Envelope |r(t)|',
-                            data: envelopeData,
+                            label: 'Received Signal r(t)',
+                            data: receivedData,
                             borderColor: '#48bb78',
                             backgroundColor: 'rgba(72, 187, 120, 0.1)',
                             borderWidth: 2,
@@ -631,7 +633,6 @@
                             y: {
                                 type: 'linear',
                                 title: { display: true, text: 'Amplitude' },
-                                min: 0,
                                 grid: { color: 'rgba(0,0,0,0.1)' }
                             }
                         }
@@ -678,7 +679,7 @@
                     data: {
                         datasets: [
                             {
-                                label: 'Jakes Model (Simulated)',
+                                label: 'Simulated',
                                 data: realisticAutocorrData,
                                 borderColor: '#e53e3e',
                                 backgroundColor: 'rgba(229, 62, 62, 0.1)',
@@ -688,7 +689,7 @@
                                 pointRadius: 0
                             },
                             {
-                                label: 'Clarke Model (Theoretical)',
+                                label: 'Theoretical',
                                 data: idealAutocorrData,
                                 borderColor: '#667eea',
                                 backgroundColor: 'rgba(102, 126, 234, 0.1)',
@@ -728,7 +729,7 @@
                     data: {
                         datasets: [
                             {
-                                label: 'Jakes Model (Simulated)',
+                                label: 'Simulated',
                                 data: realisticPSDData,
                                 borderColor: '#e53e3e',
                                 backgroundColor: 'rgba(229, 62, 62, 0.1)',
@@ -738,7 +739,7 @@
                                 pointRadius: 0
                             },
                             {
-                                label: 'Clarke Model (Theoretical)',
+                                label: 'Theoretical',
                                 data: idealPSD,
                                 borderColor: '#667eea',
                                 backgroundColor: 'rgba(102, 126, 234, 0.1)',
