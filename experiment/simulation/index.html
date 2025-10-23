@@ -46,21 +46,17 @@
                 
                 <div id="clarkes-instructions">
                     <ol>
-                        <li>Set Vehicle Parameters: Adjust velocities for each vehicle (30-90 m/s) to observe how speed affects fading.</li>
-                        <li>Configure Environment: Set the carrier frequency (900 MHz is common) and number of scatterers.</li>
-                        <li>Run Simulation: Click "Simulate Clarke's Model" to generate the visualization.</li>
-                        <li>Analyze Results: Observe the autocorrelation function and power spectral density.</li>
-                        <li>Compare Vehicles: Use checkboxes to toggle visibility of different vehicle data.</li>
+                        <li>Decide number of vehicels: use the 'Add Vehicle' button to add upto 3 vehicles to the simulation. The remove button on each vehicle panel can be used to remove the respective vehicle.</li>
+                        <li>Set velocities and carrier frequencies: for each vehicle, set the velocity (any positive number) and carrier frequency at which it receives teh signal.</li>
+                        <li>Observe the autocorrelation and PSD plots: the plots on the right panel contain color-coded curves corresponding to each vehicle.</li>
                     </ol>
                 </div>
                 
                 <div id="realistic-instructions" style="display: none;">
                     <ol>
-                        <li>Set Parameters: Configure vehicle velocity, signal frequency, and carrier frequency.</li>
-                        <li>Adjust Complexity: Set the number of multipaths (N) and samples (M) for simulation accuracy.</li>
-                        <li>Run Simulation: Click "Simulate Realistic Scenario" to generate the fading channel.</li>
-                        <li>Analyze Signal: Observe the received signal envelope showing Rayleigh fading.</li>
-                        <li>Compare Models: Review how the simulated results match the theoretical predictions.</li>
+                        <li>Set the parameters: Set the vehicle velocity, message signal frequency (sine wave is transmitted), carrier frequency, number of multipath components and number of time samples.</li>
+                        <li>Click 'Simulate Realistic Scenario' to run the simulation.</li>
+                        <li>Observe the envelope of the received signal below the simulation setting in the center panel and the autocorrelation and PSD plots of the ideal and real case on the right panel.</li>
                     </ol>
                 </div>
             </div>
