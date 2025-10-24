@@ -1,1 +1,1 @@
-# Wireless Fading channel : Clarke's Model
+# Wireless Fading Channel : Clarke's Model
