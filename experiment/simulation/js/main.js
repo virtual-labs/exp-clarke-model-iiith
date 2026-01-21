@@ -45,23 +45,41 @@
             // const v2PsdCheck = document.getElementById('v2-psd-check');
             // const v3PsdCheck = document.getElementById('v3-psd-check');
 
-            // Switch between tabs
+            // ADDED: Helper function to highlight instructions
+            function highlightInstruction(stepId) {
+                // Remove active class from all potential steps
+                ['clarke-step-1', 'clarke-step-2', 'clarke-step-3', 
+                'real-step-1', 'real-step-2', 'real-step-3'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.classList.remove('active-instruction');
+                });
+
+                // Activate the specific step
+                const target = document.getElementById(stepId);
+                if (target) target.classList.add('active-instruction');
+            }
+
+            // MODIFIED: switchTab function
             function switchTab(tabName, event) {
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                document.querySelectorAll('.tab-button').forEach(button => {
-                    button.classList.remove('active');
-                });
-                document.getElementById(tabName).classList.add('active');
-                event.target.classList.add('active');
-                currentTab = tabName;
-                
-                if (tabName === 'clarkes') {
-                    drawEnvironment();
-                } else {
-                    drawRealisticEnvironment();
-                }
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+                if(event) event.target.classList.add('active');
+                currentTab = tabName;
+                
+                if (tabName === 'clarkes') {
+                    drawEnvironment();
+                    // ADDED: Reset to Step 1 for Clarke's
+                    highlightInstruction('clarke-step-1');
+                } else {
+                    drawRealisticEnvironment();
+                    // ADDED: Reset to Step 1 for Realistic
+                    highlightInstruction('real-step-1');
+                }
             }
 
             // Bessel function J0 approximation
@@ -560,6 +578,8 @@
             function simulateIdeal() {
                 updateIdealPlots();
                 drawEnvironment();
+                // ADDED: Highlight Observation step
+                highlightInstruction('clarke-step-3');
             }
 
             // Update simulateRealistic to regenerate obstacles
@@ -776,6 +796,9 @@
                 // Show panels
                 document.getElementById('realisticAutocorrelationPanel').style.display = 'block';
                 document.getElementById('realisticPsdPanel').style.display = 'block';
+                // (At the very end of the function, after charts are updated)
+                // ADDED: Highlight Observation step
+                highlightInstruction('real-step-3');
             }
 
             // Add this function to handle the "Update Plots" button
@@ -784,7 +807,7 @@
                 const updatePlotsBtn = document.getElementById('simulate-ideal-btn');
                 if (updatePlotsBtn) {
                     updatePlotsBtn.addEventListener('click', () => {
-                        updateIdealPlots();
+                        simulateIdeal();
                     });
                 }
                 
@@ -810,50 +833,86 @@
                 // Initialize vehicle management
                 updateVehicleVisibility();
                 
+                // ADDED: Initial Highlight
+                highlightInstruction('clarke-step-1');
+
                 // Add event listeners for vehicle management
-                document.getElementById('add-vehicle-btn').addEventListener('click', addVehicle);
+                document.getElementById('add-vehicle-btn').addEventListener('click', () => {
+                    addVehicle();
+                    // ADDED: Move to Step 2 (Parameters) after adding vehicle
+                    setTimeout(() => highlightInstruction('clarke-step-2'), 500); 
+                });
+                
                 document.getElementById('remove-vehicle-2-btn').addEventListener('click', () => removeVehicle(2));
                 document.getElementById('remove-vehicle-3-btn').addEventListener('click', () => removeVehicle(3));
                 
-                // Event listeners for vehicle inputs
+                // ADDED: Helper for Clarke inputs
+                const triggerClarkeStep2 = () => highlightInstruction('clarke-step-2');
+
+                // --- Vehicle 1 Inputs ---
                 document.getElementById('velocity1').addEventListener('input', () => {
                     vehicleData[0].velocity = parseFloat(document.getElementById('velocity1').value);
                     updateIdealPlots();
                     drawEnvironment();
+                    triggerClarkeStep2(); // Highlight Step 2
                 });
-                
+
                 document.getElementById('frequency1').addEventListener('input', () => {
                     vehicleData[0].frequency = parseFloat(document.getElementById('frequency1').value);
                     updateIdealPlots();
+                    triggerClarkeStep2(); // Highlight Step 2
                 });
                 
+                // --- Vehicle 2 Inputs ---
                 document.getElementById('velocity2').addEventListener('input', () => {
                     vehicleData[1].velocity = parseFloat(document.getElementById('velocity2').value);
                     updateIdealPlots();
+                    triggerClarkeStep2(); // Highlight Step 2
                 });
                 
                 document.getElementById('frequency2').addEventListener('input', () => {
                     vehicleData[1].frequency = parseFloat(document.getElementById('frequency2').value);
                     updateIdealPlots();
+                    triggerClarkeStep2(); // Highlight Step 2
                 });
                 
+                // --- Vehicle 3 Inputs ---
                 document.getElementById('velocity3').addEventListener('input', () => {
                     vehicleData[2].velocity = parseFloat(document.getElementById('velocity3').value);
                     updateIdealPlots();
+                    triggerClarkeStep2(); // Highlight Step 2
                 });
                 
                 document.getElementById('frequency3').addEventListener('input', () => {
                     vehicleData[2].frequency = parseFloat(document.getElementById('frequency3').value);
                     updateIdealPlots();
+                    triggerClarkeStep2(); // Highlight Step 2
                 });
 
-                // Listeners for checkboxes to update ideal plots
-                // v1AutocorrCheck.addEventListener('change', updateIdealPlots);
-                // v2AutocorrCheck.addEventListener('change', updateIdealPlots);
-                // v3AutocorrCheck.addEventListener('change', updateIdealPlots);
-                // v1PsdCheck.addEventListener('change', updateIdealPlots);
-                // v2PsdCheck.addEventListener('change', updateIdealPlots);
-                // v3PsdCheck.addEventListener('change', updateIdealPlots);
+                // --- Realistic Scenario Inputs ---
+                const realisticInputs = ['velocity-realistic', 'signal-frequency', 'frequency-realistic', 'multipaths', 'samples'];
+                realisticInputs.forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) {
+                        el.addEventListener('focus', () => highlightInstruction('real-step-1'));
+                        el.addEventListener('input', () => {
+                            // If user changes input, guide them to click Simulate (Step 2)
+                            highlightInstruction('real-step-1'); 
+                            clearTimeout(window.realisticInputTimer);
+                            window.realisticInputTimer = setTimeout(() => {
+                                highlightInstruction('real-step-2');
+                            }, 1000);
+                        });
+                    }
+                });
+
+                // Add click handler for the Update Plots button (Clarke)
+                const updatePlotsBtn = document.getElementById('simulate-ideal-btn');
+                if (updatePlotsBtn) {
+                    updatePlotsBtn.addEventListener('click', () => {
+                        simulateIdeal();
+                    });
+                }
                 
                 drawEnvironment();
             });

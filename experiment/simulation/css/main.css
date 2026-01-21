@@ -602,7 +602,7 @@ hr {
     }
 
     /* Style for instruction lists */
-    .v-content ol {
+    /* .v-content ol {
         counter-reset: item;
         list-style-type: none;
         margin-left: 0;
@@ -610,12 +610,15 @@ hr {
     }
 
     .v-content ol li {
-        display: block;
+        /* Use Flexbox to align number and text side-by-side */
+        /* display: flex; 
+        align-items: flex-start; /* Aligns number with the top line of text */
+
+        /* display: block;
         margin-bottom: 16px;
         padding-left: 45px;
         position: relative;
-        font-weight: normal; /* Ensure text is not bold */
-    }
+        font-weight: normal; /* Ensure text is not bold *
 
     .v-content ol li:before {
         content: counter(item)"";
@@ -631,7 +634,7 @@ hr {
         top: 0;
         font-weight: 600;
         font-size: 0.9rem;
-    }
+    } */
 
     /* Responsive styles for instructions */
     @media (max-width: 600px) {
@@ -886,4 +889,64 @@ hr {
             height: 8px;
             margin: 0 4px;
         }
+    }
+
+    /* ... existing code ... */
+
+    /* Find the .v-content ol, .v-content ol li styles and REPLACE them with this block: */
+
+    .v-content ol {
+        counter-reset: item;
+        list-style-type: none;
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    .v-content ol li {
+        /* Use Flexbox to align number and text side-by-side */
+        display: flex; 
+        align-items: flex-start; /* Aligns number with the top line of text */
+        
+        margin-bottom: 16px;
+        line-height: 1.6;
+        position: relative;
+        font-weight: normal;
+        transition: all 0.3s ease;
+        padding: 8px; /* Inner spacing for the highlight effect */
+        border-radius: 4px;
+        border-left: 4px solid transparent; /* Placeholder for the active border */
+    }
+
+    .v-content ol li:before {
+        content: counter(item);
+        counter-increment: item;
+        
+        /* Fix the size of the number container */
+        width: 28px;
+        height: 28px;
+        flex-shrink: 0; /* Prevents the number from being squished */
+        
+        /* Center the number inside its box */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        /* Add space between number and text */
+        margin-right: 15px; 
+        
+        /* Visual Styling */
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #4a5568;
+        background-color: #edf2f7; /* Light gray circle background for better visibility */
+        border-radius: 50%; /* Makes it a circle */
+    }
+
+    /* Ensure the active state still looks good with Flexbox */
+    .active-instruction {
+        background-color: #e3f2fd; /* Light blue background */
+        border-left: 4px solid #2196F3 !important; /* Blue accent border */
+        color: #0d47a1; /* Darker blue text */
+        font-weight: 600 !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
