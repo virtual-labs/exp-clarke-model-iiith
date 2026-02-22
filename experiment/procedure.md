@@ -1,4 +1,4 @@
-In this experiment, you will experimentally verify Clarke's fading model. You will do this by comparing the `autocorrelation function` and the `power spectral density` generated analytically by the model and the ones generated experimentally by simulating a realistic scenario.
+In this experiment, you will verify through simulation the Clarke's fading model. You will do this by comparing the `autocorrelation function` and the `power spectral density` generated analytically by the model and the ones generated experimentally by simulating a realistic scenario.
 
 ### Clarke's Model
 In this tab named `Clarke's model` you will have the following parameters that you can vary.
@@ -8,7 +8,7 @@ In this tab named `Clarke's model` you will have the following parameters that y
 
 In the center, you can see the setting of Clarke's model, with the receiver $R_X$ in the center (red), surrounded by scatterers (green) situated on a circle.
 
-On the right of the screen you can the autocorrelation and power spectral density plots for the different cases corresponding to the three different vehicle velocities (each plot has 3 color-coded curves).
+On the right of the screen you can the see the autocorrelation and power spectral density plots for the different cases corresponding to the three different vehicle velocities (each plot has 3 color-coded curves).
 
 ### Realistic Model
 In this tab, you will make the comparison between the results generated using the Clarke's model against the one using computer simulations.
