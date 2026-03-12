@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireless Channel Modeling Virtual Lab</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+       <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+ 
+    
+    <div class="container">
+        <div class="header">
+            <h1>Wireless Fading channel : Clarke's Model</h1>
+            <p>Interactive simulation of mobile radio channel fading characteristics</p>
+        </div>
+        <style>
+            .header{
+                padding: 5px 0;
+                margin-bottom: 5px;
+            }
+            .tabs {
+                margin-top: 0;
+                padding-top: 0;
+                margin-bottom: 0; /* Remove margin from tabs */
+            }
+            @media (max-width: 500px) {
+                .header {
+                    padding: 5px;
+                    text-align: center;
+                }
+            }
+        </style>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('clarkes', event)">Clarke's Model</button>
+            <button class="tab-button" onclick="switchTab('realistic', event)">Realistic Scenario</button>
+        </div>
+        
+        <!-- Updated instructions with improved styling -->
+        <div class="v-collapsible-instruction-container v-instruction-container" style="margin-top: 2%;">
+            <div class="v-collapsible is-size-5">Instructions</div>
+            <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%;">
+                <h3>To understand Wireless Fading Channels using Clarke's Model, please follow these steps:</h3>
+                
+                <div id="clarkes-instructions">
+                    <ol>
+                        <li id="clarke-step-1">Decide number of vehicles: use the 'Add Receiver' button to add upto 3 vehicles to the simulation. The remove button on each vehicle panel can be used to remove the respective vehicle.</li>
+                        <li id="clarke-step-2">Set velocities and carrier frequencies: for each vehicle, set the velocity (any positive number) and carrier frequency at which it receives the signal.</li>
+                        <li id="clarke-step-3">Observe the autocorrelation and PSD plots: the plots on the right panel contain color-coded curves corresponding to each vehicle.</li>
+                    </ol>
+                </div>
+                
+                <div id="realistic-instructions" style="display: none;">
+                    <ol>
+                        <li id="real-step-1">Set the parameters: Set the vehicle velocity, message signal frequency (sine wave is transmitted), carrier frequency, number of multipath components and number of time samples.</li>
+                        <li id="real-step-2">Click 'Simulate Realistic Scenario' to run the simulation.</li>
+                        <li id="real-step-3">Observe the envelope of the received signal below the simulation setting in the center panel and the autocorrelation and PSD plots of the ideal and real case on the right panel.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <!-- Replace the controls-panel div in Clarke's Model section with this: -->
+<div id="clarkes" class="tab-content active">
+    <div class="lab-layout">
+
+        <div class="controls-panel">
+            <h2>Parameters - Clarke's Model</h2>
+            
+            <div class="vehicle-section">
+                <h4>Vehicle 1</h4>
+                <div class="input-group">
+                    <label for="velocity1">Velocity (m/s):</label>
+                    <input type="number" id="velocity1" value="30" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label for="frequency1">Carrier Frequency (MHz):</label>
+                    <input type="number" id="frequency1" value="900" class="input-field">
+                </div>
+            </div>
+
+            <div id="vehicle2-inputs" class="vehicle-section" style="display: none;">
+                <div class="vehicle-header">
+                    <h4>Vehicle 2</h4>
+                    <button id="remove-vehicle-2-btn" class="remove-btn">- Remove</button>
+                </div>
+                <div class="input-group">
+                    <label for="velocity2">Velocity (m/s):</label>
+                    <input type="number" id="velocity2" value="60" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label for="frequency2">Carrier Frequency (MHz):</label>
+                    <input type="number" id="frequency2" value="900" class="input-field">
+                </div>
+            </div>
+
+            <div id="vehicle3-inputs" class="vehicle-section" style="display: none;">
+                 <div class="vehicle-header">
+                    <h4>Vehicle 3</h4>
+                    <button id="remove-vehicle-3-btn" class="remove-btn">- Remove</button>
+                </div>
+                <div class="input-group">
+                    <label for="velocity3">Velocity (m/s):</label>
+                    <input type="number" id="velocity3" value="90" class="input-field">
+                </div>
+                 <div class="input-group">
+                    <label for="frequency3">Carrier Frequency (MHz):</label>
+                    <input type="number" id="frequency3" value="900" class="input-field">
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button id="add-vehicle-btn" class="secondary-btn">+ Add Receiver</button>
+                <button id="simulate-ideal-btn" class="primary-btn">Update Plots</button>
+            </div>
+        </div>
+
+        <div class="environment-panel">
+            <h2>Scattering Environment</h2>
+            <canvas id="environmentCanvas" class="environment-canvas"></canvas>
+        </div>
+        
+        <div class="output-panel">
+            <div class="chart-panel">
+                <h3>Autocorrelation Function R(τ)</h3>
+                <!-- <div class="checkbox-group">
+                    <label><input type="checkbox" id="v1-autocorr-check" checked> Vehicle 1</label>
+                    <label><input type="checkbox" id="v2-autocorr-check" checked> Vehicle 2</label>
+                    <label><input type="checkbox" id="v3-autocorr-check" checked> Vehicle 3</label>
+                </div> -->
+                <div class="chart-container">
+                    <canvas id="autocorrelationChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-panel">
+                <h3>Power Spectral Density S(f)</h3>
+                <!-- <div class="checkbox-group">
+                    <label><input type="checkbox" id="v1-psd-check" checked> Vehicle 1</label>
+                    <label><input type="checkbox" id="v2-psd-check" checked> Vehicle 2</label>
+                    <label><input type="checkbox" id="v3-psd-check" checked> Vehicle 3</label>
+                </div> -->
+                <div class="chart-container">
+                    <canvas id="psdChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div id="realistic" class="tab-content">
+    <div class="lab-layout">
+        <!-- Left: Controls Panel (unchanged) -->
+        <div class="controls-panel">
+            <h2>Parameters - Realistic Scenario</h2>
+            
+            <div class="input-group-container">
+                <div class="control-group">
+                    <label for="velocity-realistic">Vehicle Velocity (m/s)</label>
+                    <input type="number" id="velocity-realistic" value="30" min="0" max="100" step="1">
+                    <div class="help-text">Controls Doppler spread and fading rate.</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="signal-frequency">Signal Frequency (Hz)</label>
+                    <input type="number" id="signal-frequency" value="1000" min="100" max="10000" step="100">
+                    <div class="help-text">Frequency of the transmitted sine signal.</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="frequency-realistic">Carrier Frequency (MHz)</label>
+                    <input type="number" id="frequency-realistic" value="900" min="100" max="6000" step="100">
+                    <div class="help-text">Affects wavelength and Doppler frequency.</div>
+                </div>
+            </div>
+            
+            <div class="input-group-container">
+                <div class="control-group">
+                    <label for="multipaths">Number of Multipaths (N)</label>
+                    <input type="number" id="multipaths" value="20" min="6" max="50" step="2">
+                    <div class="help-text">Number of multipath components in sum of sinusoids.</div>
+                </div>
+
+                <div class="control-group">
+                    <label for="samples">Number of Samples (M)</label>
+                    <input type="number" id="samples" value="1024" min="128" max="4096" step="128">
+                    <div class="help-text">Number of time samples for simulation.</div>
+                </div>
+            </div>
+            
+            <button class="simulate-button" onclick="simulateRealistic()">Simulate Realistic Scenario</button>
+
+            <!-- <div class="info-box">
+                <h4>Realistic Model Implementation</h4>
+                <p>This model simulates a practical Rayleigh fading channel using **Jakes' sum of sinusoids** method with the following steps:</p>
+                <ul style="margin: 10px 0 0 20px; line-height: 1.6;">
+                    <li><strong>Channel Generation:</strong> Complex baseband channel h(t) = h<sub>I</sub>(t) + jh<sub>Q</sub>(t) using Jakes' model with N multipath components and random arrival angles.</li>
+                    <li><strong>Signal Processing:</strong> A sine wave s(t) is transmitted and the received signal r(t) = h(t) × s(t) is computed.</li>
+                    <li><strong>Envelope Calculation:</strong> The signal envelope |r(t)| = √(r<sub>I</sub>²(t) + r<sub>Q</sub>²(t)) shows Rayleigh fading effects.</li>
+                    <li><strong>Statistical Analysis:</strong> Autocorrelation R(τ) and power spectral density S(f) are computed from the simulated channel and compared with Clarke's theoretical model.</li>
+                </ul>
+            </div> -->
+        </div>
+
+        <!-- Center: Both Environment and Received Signal -->
+        <div class="realistic-center-panels">
+            <div class="environment-panel">
+                <h2>Multipath Environment</h2>
+                <canvas id="realisticEnvironmentCanvas" class="environment-canvas"></canvas>
+            </div>
+            
+            <div class="environment-panel">
+                <h2>Received Signal Envelope r(t)</h2>
+                <div class="chart-container" style="height: 400px;">
+                    <canvas id="receivedSignalChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right: Output Panel with stacked charts -->
+        <div class="output-panel">
+            <div class="chart-panel">
+                <h3>Autocorrelation Function R(τ) - Simulated vs. Ideal</h3>
+                <div class="chart-container">
+                    <canvas id="realisticAutocorrelationChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-panel">
+                <h3>Power Spectral Density S(f) - Simulated vs. Ideal</h3>
+                <div class="chart-container">
+                    <canvas id="realisticPsdChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+<script src="./js/main.js"></script>
+<script>
+    // Add collapsible functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const collapsible = document.querySelector('.v-collapsible');
+        const content = document.querySelector('.v-content');
+        
+        // Initial state (collapsed)
+        content.style.display = 'none';
+        
+        collapsible.addEventListener('click', function() {
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                collapsible.classList.add('active');
+            } else {
+                content.style.display = 'none';
+                collapsible.classList.remove('active');
+            }
+        });
+        
+        // Show relevant instructions based on active tab
+        const clarkesInstructions = document.getElementById('clarkes-instructions');
+        const realisticInstructions = document.getElementById('realistic-instructions');
+        
+        // Function to show instructions based on tab
+        function showRelevantInstructions(tabName) {
+            if (tabName === 'clarkes') {
+                clarkesInstructions.style.display = 'block';
+                realisticInstructions.style.display = 'none';
+            } else {
+                clarkesInstructions.style.display = 'none';
+                realisticInstructions.style.display = 'block';
+            }
+        }
+        
+        // Initialize with active tab
+        showRelevantInstructions('clarkes');
+        
+        // Hook into tab switching
+        window.originalSwitchTab = window.switchTab || function(){};
+        window.switchTab = function(tabName, event) {
+            window.originalSwitchTab(tabName, event);
+            showRelevantInstructions(tabName);
+        };
+    });
+</script>
+<script src="../assets/js/iframeResize.js"></script>
+        
+        </body>
+</html>
